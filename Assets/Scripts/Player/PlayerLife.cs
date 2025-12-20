@@ -9,7 +9,7 @@ public class PlayerLife : MonoBehaviour
         hp -= dmg;
         if (hp <= 0)
             SpawnManager.Instance.Respawn(this);
-    }
+    }   
 
     public void ResetLifeToOne()
     {
