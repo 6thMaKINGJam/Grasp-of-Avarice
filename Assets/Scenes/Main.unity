@@ -5238,7 +5238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a87bca30e37e34522a5bf996ff469195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  inventory: {fileID: 710092531}
   slotUIs:
   - {fileID: 1326898866}
   - {fileID: 857349566}
