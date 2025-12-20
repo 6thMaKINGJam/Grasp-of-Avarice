@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
@@ -11,63 +12,80 @@ public class InventoryUI : MonoBehaviour
     [Header("Collider Slots (matching index)")]
     [SerializeField] private ColliderSlotUI[] colliderSlotUIs;
 
-    private void Awake()
-    {
-        inventory = PlayerInventory.Instance;
-    }
+    private bool _subscribed = false;
 
     private void OnEnable()
     {
-        inventory = PlayerInventory.Instance;
-
-        if (inventory == null) return;
-
-        inventory.OnChanged += Refresh;
-        Refresh();
-        SetColliderSlotsActive(false);
+        StartCoroutine(BindWhenReady());
     }
 
     private void OnDisable()
     {
-        if (inventory == null) return;
-        inventory.OnChanged -= Refresh;
-        SetColliderSlotsActive(true);
+        Unsubscribe();
+        SetColliderSlotsActive(false);
     }
 
-    private void Start()
+    private IEnumerator BindWhenReady()
     {
-        if (inventory == null) return;
-        for (int i = 0; i < slotUIs.Length; i++)
+        yield return null;
+        yield return null;
+
+        inventory = PlayerInventory.Instance;
+        if (inventory == null) yield break;
+
+        SubscribeOnce();
+
+        if (slotUIs != null)
         {
-            if (slotUIs[i] != null)
-                slotUIs[i].Bind(inventory, i);
+            for (int i = 0; i < slotUIs.Length; i++)
+            {
+                if (slotUIs[i] != null)
+                    slotUIs[i].Bind(inventory, i);
+            }
         }
 
         Refresh();
+        SetColliderSlotsActive(false);
+    }
+
+    private void SubscribeOnce()
+    {
+        if (_subscribed) return;
+        _subscribed = true;
+        inventory.OnChanged += Refresh;
+    }
+
+    private void Unsubscribe()
+    {
+        if (!_subscribed) return;
+        _subscribed = false;
+
+        if (inventory != null)
+            inventory.OnChanged -= Refresh;
     }
 
     public void Refresh()
     {
-        if (inventory == null) return;
+        if (inventory == null || slotUIs == null) return;
 
         int n = Mathf.Min(inventory.Capacity, slotUIs.Length);
         for (int i = 0; i < n; i++)
         {
             var item = inventory.GetItem(i);
-            slotUIs[i].SetItem(item);
-            if (item != null)
-                colliderSlotUIs[i].SetVisualsActive(true);
-            else
-                colliderSlotUIs[i].SetVisualsActive(false);
+            if (slotUIs[i] != null)
+                slotUIs[i].SetItem(item);
+
+            if (colliderSlotUIs != null && i < colliderSlotUIs.Length && colliderSlotUIs[i] != null)
+            {
+                colliderSlotUIs[i].SetVisualsActive(item != null);
+            }
         }
     }
 
-    // slot 전체 끄고 켜고
     private void SetColliderSlotsActive(bool active)
     {
         if (colliderSlotUIs == null) return;
-        int n = colliderSlotUIs.Length;
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < colliderSlotUIs.Length; i++)
         {
             if (colliderSlotUIs[i] == null) continue;
             colliderSlotUIs[i].SetVisualsActive(active);
