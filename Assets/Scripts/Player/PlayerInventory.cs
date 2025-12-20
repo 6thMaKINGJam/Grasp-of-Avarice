@@ -24,9 +24,12 @@ public class PlayerInventory : MonoBehaviour
 
     public static PlayerInventory Instance;
     public ItemData startingHat;
+    public PlayerLife playerLife;
 
     private void Awake()
     {
+        playerLife = GetComponent<PlayerLife>();
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -110,10 +113,17 @@ public class PlayerInventory : MonoBehaviour
             {
                 _slots[slotIndex] = item;
                 OnChanged?.Invoke();
+                print(slotIndex + "번 슬롯에 " + item.itemName + " 아이템 추가됨");
+                if (k == fillOrder.Length - 1)
+                {
+                    Debug.Log("인벤토리가 가득 찼습니다!");
+                    playerLife.TakeDamage(1);
+                }
                 return true;
             }
         }
 
+        //playerLife.TakeDamage(1);
         TriggerGameOver();
         return false;
     }

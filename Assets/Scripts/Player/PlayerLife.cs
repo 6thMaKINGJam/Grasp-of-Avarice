@@ -6,6 +6,7 @@ public class PlayerLife : MonoBehaviour
 
     public void TakeDamage(int dmg)
     {
+        print("Take Damage »£√‚µ ");
         hp -= dmg;
         if (hp <= 0)
             SpawnManager.Instance.Respawn(this);
