@@ -34,6 +34,12 @@ public class Feather : MonoBehaviour
     public virtual void OnPickedUp()
     {
         Debug.Log($"{FeatherUI.Instance.currentFeatherCount}번째 깃털을 획득!");
+        if(FeatherUI.Instance.currentFeatherCount >= 5)
+        {
+            FeatherUI.Instance.ResetFeatherCount();
+            PlayerInventory.Instance.UpgradeHat();
+            Debug.Log("모자가 업그레이드 되었습니다!");
+        }
         Destroy(gameObject);
     }
 }

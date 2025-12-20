@@ -104,6 +104,23 @@ public class ItemController : MonoBehaviour
 
     // 인벤토리에서 마지막 아이템을 제거하고 월드에 드롭
     private void DropLastItem(){
+        int lastSlotIndex = playerInventory.GetLastFilledIndex();
+
+        if(lastSlotIndex == -1){
+            Debug.Log("버릴 아이템이 없음!");
+            return;
+        }
+        
+        ItemData dataToCheck = playerInventory.GetItem(lastSlotIndex);
+
+        if(dataToCheck != null){
+            if(!dataToCheck.canDrop){
+                Debug.Log($"{dataToCheck.itemName}은(는) 버릴 수 없는 아이템입니다!");
+                return;
+            }
+        }
+
+         // 인벤토리 참조 보장
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
             if(droppedItemData != null){
                 Vector3 spawnPos = playertransform.position;
@@ -117,9 +134,6 @@ public class ItemController : MonoBehaviour
                     itemScript.itemData = droppedItemData;
                 }
                 Debug.Log($"{droppedItemData.itemName}를 버림!");
-            }
-            else{
-                Debug.Log("버릴 아이템이 없음!");
             }
         }
     }
