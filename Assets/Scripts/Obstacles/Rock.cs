@@ -66,14 +66,4 @@ public class Rock : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = waitingGravity;
     }
-
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (!resetOnResetZone) return;
-
-        if (col.collider.CompareTag("ResetZone"))
-        {
-            ResetBoulder();
-        }
-    }
 }
