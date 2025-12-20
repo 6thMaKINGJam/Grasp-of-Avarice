@@ -11,6 +11,7 @@ TagManager:
   - Breakable
   - NPC
   - Key
+  - Feather
   layers:
   - Default
   - TransparentFX
