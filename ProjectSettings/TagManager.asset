@@ -14,6 +14,7 @@ TagManager:
   - Feather
   - Undefined
   - Coin
+  - Hat
   layers:
   - Default
   - TransparentFX

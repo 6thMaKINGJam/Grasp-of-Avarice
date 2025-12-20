@@ -20,5 +20,11 @@ public class FeatherUI : MonoBehaviour
         if(featherCountText != null)    featherCountText.text = "Feathers: " + currentFeatherCount.ToString();
         else Debug.LogWarning("FeatherUI: featherCountText is not assigned!");
     }
+    public void ResetFeatherCount()
+    {
+        currentFeatherCount -= 6;
+        UpdateFeatherCount();
+        Debug.Log("깃털 개수가 초기화되었습니다.");
+    }
 
 }

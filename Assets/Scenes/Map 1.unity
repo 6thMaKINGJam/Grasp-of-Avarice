@@ -1310,6 +1310,7 @@ MonoBehaviour:
   uiAnchor: {fileID: 350637073}
   cam: {fileID: 519420031}
   smooth: 12
+  cameraYOffset: -1.5
 --- !u!1 &549952389
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,6 +2074,8 @@ MonoBehaviour:
   capacity: 15
   fillOrder: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
   restartSceneName: Start
+  startingHat: {fileID: 0}
+  upgradedHat: {fileID: 0}
 --- !u!114 &710092532
 MonoBehaviour:
   m_ObjectHideFlags: 0

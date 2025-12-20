@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BottleData
   m_EditorClassIdentifier: 
   itemName: 
-  itemType: 0
+  itemType: 3
   icon: {fileID: 21300000, guid: 2b47020343ebe4b88b83007864c7e5f8, type: 3}
+  canDrop: 1
   worldPrefab: {fileID: 2820033626957325287, guid: e69e99738eba046f393e2477c208d1b6, type: 3}

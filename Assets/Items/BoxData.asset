@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BoxData
   m_EditorClassIdentifier: 
   itemName: 
-  itemType: 0
+  itemType: 2
   icon: {fileID: 0}
+  canDrop: 1
   worldPrefab: {fileID: 2140249762898938109, guid: 3169ca9876d1fbf49aee380a35f767d1, type: 3}

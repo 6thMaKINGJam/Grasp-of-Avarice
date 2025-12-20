@@ -6,6 +6,8 @@ public class PlayerAnchor : MonoBehaviour
     [SerializeField] private RectTransform uiAnchor;           // PlayerViewportAnchor
     [SerializeField] private Camera cam;
     [SerializeField] private float smooth = 12f;
+    [SerializeField] private float cameraYOffset = -1.5f; 
+
 
     private Vector3 _offsetWorld;
 
@@ -41,6 +43,7 @@ public class PlayerAnchor : MonoBehaviour
 
         // 플레이어가 앵커 위치에 오도록 하는 카메라 오프셋 계산
         _offsetWorld = cam.transform.position - worldAtAnchor;
+        _offsetWorld.y += cameraYOffset;
         _offsetWorld.z = cam.transform.position.z - target.position.z; 
     }
 }
