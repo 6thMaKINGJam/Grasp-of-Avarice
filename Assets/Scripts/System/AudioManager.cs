@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    // ---------------- BGM ----------------
     [System.Serializable]
     public class SceneBgm
     {
@@ -21,15 +22,31 @@ public class AudioManager : MonoBehaviour
     [Header("Fade")]
     public float fadeTime = 0.8f;
 
+    // ---------------- SFX ----------------
+    [System.Serializable] // ★ 이거 꼭 필요
+    public class SfxData
+    {
+        public SfxType type;
+        public AudioClip clip;
+        [Range(0f, 1f)] public float volume = 1f;
+    }
+
+    [Header("SFX Table")]
+    public List<SfxData> sfxList = new List<SfxData>();
+
     [Header("SFX")]
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
+    private Dictionary<SfxType, SfxData> sfxMap;
+
+    // ---------------- Internals ----------------
     private AudioSource bgm;
     private Dictionary<string, SceneBgm> bgmMap;
     private Coroutine fadeCo;
 
     void Awake()
     {
+        // 싱글톤
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -38,17 +55,26 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // BGM AudioSource
         bgm = gameObject.AddComponent<AudioSource>();
         bgm.loop = true;
         bgm.playOnAwake = false;
         bgm.spatialBlend = 0f; // 2D
         bgm.volume = 0f;
 
+        // 맵핑 테이블 만들기
         bgmMap = new Dictionary<string, SceneBgm>();
         foreach (var b in sceneBgms)
         {
             if (!string.IsNullOrWhiteSpace(b.sceneName) && b.clip != null && !bgmMap.ContainsKey(b.sceneName))
                 bgmMap.Add(b.sceneName, b);
+        }
+
+        sfxMap = new Dictionary<SfxType, SfxData>();
+        foreach (var s in sfxList)
+        {
+            if (s != null && s.clip != null && !sfxMap.ContainsKey(s.type))
+                sfxMap.Add(s.type, s);
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -66,6 +92,7 @@ public class AudioManager : MonoBehaviour
             PlayBgm(data.clip, data.volume);
     }
 
+    // ---------------- BGM API ----------------
     public void PlayBgm(AudioClip clip, float targetVolume = 0.7f)
     {
         if (clip == null) return;
@@ -89,7 +116,7 @@ public class AudioManager : MonoBehaviour
         bgm.clip = null;
         bgm.volume = 0f;
     }
-    
+
     public void FadeOutBgm(float time)
     {
         if (fadeCo != null) StopCoroutine(fadeCo);
@@ -119,7 +146,7 @@ public class AudioManager : MonoBehaviour
         float t = 0f;
         float startVol = bgm.volume;
 
-        // Fade Out (현재 재생 중일 때만)
+        // Fade Out
         if (bgm.isPlaying && bgm.clip != null && startVol > 0f)
         {
             while (t < time)
@@ -150,16 +177,17 @@ public class AudioManager : MonoBehaviour
         fadeCo = null;
     }
 
-    public void PlaySfx(AudioClip clip, float volumeScale = 1f)
+    // ---------------- SFX API ----------------
+    public void PlaySfx(SfxType type)
     {
-        if (clip == null) return;
+        if (sfxMap == null || !sfxMap.TryGetValue(type, out var data) || data.clip == null) return;
 
-        var sfx = gameObject.AddComponent<AudioSource>();
+        AudioSource sfx = gameObject.AddComponent<AudioSource>();
         sfx.playOnAwake = false;
         sfx.spatialBlend = 0f;
-        sfx.volume = Mathf.Clamp01(sfxVolume * volumeScale);
-        sfx.PlayOneShot(clip);
+        sfx.volume = Mathf.Clamp01(data.volume * sfxVolume);
+        sfx.PlayOneShot(data.clip);
 
-        Destroy(sfx, clip.length + 0.05f);
+        Destroy(sfx, data.clip.length + 0.05f);
     }
 }
