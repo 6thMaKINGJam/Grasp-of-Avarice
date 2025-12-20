@@ -18,6 +18,7 @@ public class Bomb : Item
     private IEnumerator ExplodeDelayedCoroutine(float delay)
     {
         yield return new WaitForSeconds(delay);
+        print("Explode 실행됨");
         Explode();
     }
 
@@ -61,6 +62,7 @@ public class Bomb : Item
         }
 
         // 폭탄 제거
+        print("폭탄 제거할 거임");
         Destroy(gameObject);
     }
 }

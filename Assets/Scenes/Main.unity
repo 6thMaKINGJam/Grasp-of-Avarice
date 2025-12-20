@@ -3806,6 +3806,7 @@ MonoBehaviour:
   ladderAlignStrength: 2
   ladderMaxAlignSpeed: 10
   ladderAlignAccel: 10
+  jumpDeceleration: 0.5
 --- !u!114 &710092530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5089,7 +5090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a87bca30e37e34522a5bf996ff469195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  inventory: {fileID: 710092531}
   slotUIs:
   - {fileID: 1326898866}
   - {fileID: 857349566}

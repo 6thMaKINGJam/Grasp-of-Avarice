@@ -115,6 +115,8 @@ public class ItemController : MonoBehaviour
                 Item itemScript = droppedItem.GetComponent<Item>();
                 if(itemScript != null){
                     itemScript.itemData = droppedItemData;
+                    //itemScript.IsDroppedByPlayer = true;
+                    itemScript.OnDroppedByPlayer();
                 }
                 Debug.Log($"{droppedItemData.itemName}를 버림!");
             }
