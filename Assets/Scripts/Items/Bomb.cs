@@ -5,10 +5,12 @@ using UnityEngine.Tilemaps;
 
 public class Bomb : Item
 {
-    private void Awake()
-    {
-        ExplodeAfterDelay();
-    }
+    // 폭탄이 배치되어있을 때마다 폭발하면 안 되니까 Awake 주석 처리
+    //private void Awake()
+    //{
+    //    ExplodeAfterDelay();
+    //}
+
     // 지정한 시간(초) 후에 Explode를 호출하는 코루틴
     private IEnumerator ExplodeDelayedCoroutine(float delay)
     {
