@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BombData
   m_EditorClassIdentifier: 
   itemName: 
-  itemType: 0
+  itemType: 1
   icon: {fileID: 0}
-  worldPrefab: {fileID: 0}
+  worldPrefab: {fileID: 5353771067861760557, guid: ac4b87322012a624b95f1e5a931d9fa9, type: 3}

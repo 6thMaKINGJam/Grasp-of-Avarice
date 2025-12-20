@@ -10,6 +10,9 @@ public class Item : MonoBehaviour
 
     public bool isPlayerNearby = false;
 
+    [HideInInspector]
+    public bool IsDroppedByPlayer = false;
+
     private void OnTriggerEnter2D(Collider2D collision){
         if(collision.gameObject.tag == "Player"){
             //현재 플레이어와 닿은 상태
@@ -32,5 +35,10 @@ public class Item : MonoBehaviour
     {
         Debug.Log($"{itemData.itemName} ({instanceID}번)을 획득!");
         Destroy(gameObject);
+    }
+
+    public virtual void OnDroppedByPlayer()
+    {
+        Debug.Log($"{itemData.itemName} ({instanceID})가 플레이어에 의해 버려짐.");
     }
 }
