@@ -39,7 +39,11 @@ public class CharacterMovement : MonoBehaviour
     private Vector2 _currentVelocity;   // 이동 속도
 
     private bool _isGround;
-    private bool _isClimbing;       
+    private bool _isClimbing;
+
+    // Box 통과 처리 관련
+    private Collider2D _standingBoxCollider;   // 지금 플레이어 바로 아래에 서 있는 박스의 collider
+    private Coroutine _ignoreBoxCoroutine;
 
 
     private void Awake()
@@ -88,6 +92,17 @@ public class CharacterMovement : MonoBehaviour
                 newX = Mathf.MoveTowards(_rigidBody.velocity.x, 0f, deceleration * Time.fixedDeltaTime);
         }
         _rigidBody.velocity = new Vector2(newX, _rigidBody.velocity.y);
+    }
+
+    private void Update()
+    {
+        // 박스 위에 서 있을 때 D 누르면 박스와의 충돌을 일시 해제하여 아래로 내려가도록 처리
+        if (_standingBoxCollider != null && Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("S키 눌림, 박스 충돌 무시 시작");
+            if (_ignoreBoxCoroutine == null)
+                _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
+        }
     }
 
     public void Move(Vector2 direction)
@@ -160,5 +175,69 @@ public class CharacterMovement : MonoBehaviour
             if (_currentLadder == other) _currentLadder = null;
             EndClimbState();
         }
+    }
+
+    // 박스 위에 서 있는지 판단: collision의 contact normal을 사용
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Box")) return;
+
+        Debug.Log("Box 위에 서 있음");
+        foreach (var contact in collision.contacts)
+        {
+            // contact.normal 는 충돌 쪽에서 바라본 법선, 플레이어가 위에 있으면 normal.y > 0
+            if (contact.normal.y > 0.5f)
+            {
+                _standingBoxCollider = collision.collider;
+                Debug.Log("standingBoxCollider 설정됨");
+                return;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Box"))
+        {
+            Debug.Log("Box에서 벗어남");
+            if (collision.collider == _standingBoxCollider)
+                _standingBoxCollider = null;
+        }
+    }
+
+    // 플레이어 콜라이더와 boxCollider 간 충돌을 일시 무시하고,
+    // 플레이어가 완전히 박스 아래로 내려가면 충돌을 복구
+    private IEnumerator IgnoreBoxCollision(Collider2D boxCollider)
+    {
+        if (_collider == null || boxCollider == null)
+        {
+            _ignoreBoxCoroutine = null;
+            yield break;
+        }
+
+        Physics2D.IgnoreCollision(_collider, boxCollider, true);
+
+        float timeout = 1.5f;
+        float elapsed = 0f;
+
+        while (elapsed < timeout)
+        {
+            if (boxCollider == null) break;
+
+            float playerBottom = _collider.bounds.min.y;
+            float boxBottom = boxCollider.bounds.min.y;
+
+            // 플레이어가 박스보다 아래로 내려가면 종료
+            if (playerBottom < boxBottom - 0.01f)
+                break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (_collider != null && boxCollider != null)
+            Physics2D.IgnoreCollision(_collider, boxCollider, false);
+
+        _ignoreBoxCoroutine = null;
     }
 }
