@@ -117,7 +117,7 @@ public class PlayerInventory : MonoBehaviour
                 if (k == fillOrder.Length - 1)
                 {
                     Debug.Log("인벤토리가 가득 찼습니다!");
-                    playerLife.TakeDamage(1);
+                    TriggerGameOver_ReloadCurrentScene(); 
                 }
                 return true;
             }
@@ -178,13 +178,36 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    public void ResetInventoryToStart()
+    {
+        EnsureInit();
+        Array.Clear(_slots, 0, _slots.Length);
+
+        if (startingHat != null)
+            _slots[0] = startingHat;
+
+        OnChanged?.Invoke();
+    }
+
     private void TriggerGameOver()
     {
         OnGameOver?.Invoke();
+
+        ResetInventoryToStart();
 
         if (!string.IsNullOrEmpty(restartSceneName))
             SceneManager.LoadScene(restartSceneName);
         else
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void TriggerGameOver_ReloadCurrentScene()
+    {
+        // 1) 인벤 초기화 (원하면)
+        ResetInventoryToStart();
+
+        // 2) 현재 씬 다시 로드
+        int idx = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(idx);
     }
 }
