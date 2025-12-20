@@ -758,6 +758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nearbyItems: []
   playerInventory: {fileID: 710092531}
+  playertransform: {fileID: 710092523}
 --- !u!4 &125992142
 Transform:
   m_ObjectHideFlags: 0
@@ -1536,6 +1537,7 @@ GameObject:
   - component: {fileID: 192465676}
   - component: {fileID: 192465675}
   - component: {fileID: 192465674}
+  - component: {fileID: 192465678}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -1556,8 +1558,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DialoguePanel: {fileID: 406740544}
-  DialogueText: {fileID: 0}
+  DialogueText: {fileID: 1771820605}
   message: give me money
+  neededCoin: 2
 --- !u!61 &192465675
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1671,6 +1674,33 @@ Transform:
   - {fileID: 324860340}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &192465678
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192465673}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &236055142
 GameObject:
   m_ObjectHideFlags: 0
@@ -4910,7 +4940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_TagString
-      value: Item
+      value: Coin
       objectReference: {fileID: 0}
     - target: {fileID: 5543957739510044274, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6776,8 +6806,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1
-  m_fontSizeBase: 1
+  m_fontSize: 0.3
+  m_fontSizeBase: 0.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

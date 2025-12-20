@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7024906877237938651}
   m_Layer: 0
   m_Name: Coin
-  m_TagString: Item
+  m_TagString: Coin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -158,3 +158,4 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: f933d56518a1c9741a3b1db456cfcfe9, type: 2}
   instanceID: 0
   isPlayerNearby: 0
+  IsDroppedByPlayer: 0
