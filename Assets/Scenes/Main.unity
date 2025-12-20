@@ -581,7 +581,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_Name
-      value: GoldCoin (2)
+      value: Coin3
       objectReference: {fileID: 0}
     - target: {fileID: 5543957739510044274, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1093,7 +1093,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_Name
-      value: GoldCoin (1)
+      value: Coin2
       objectReference: {fileID: 0}
     - target: {fileID: 5543957739510044274, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1950,7 +1950,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_Name
-      value: GoldCoin
+      value: Coin1
       objectReference: {fileID: 0}
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_TagString
