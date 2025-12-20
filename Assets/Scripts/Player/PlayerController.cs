@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
     private PlayerInput _playerInput;
     private CharacterMovement _movement;
     private SpriteRenderer _sprite;
-
     public Vector2 MoveInput { get; private set; }  
     public Vector2 ClimbInput { get; private set; } 
 
