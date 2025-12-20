@@ -40,9 +40,6 @@ public class SpawnManager : MonoBehaviour
         Debug.Log($"[SpawnManager] ActiveSceneChanged -> {oldScene.name} => {newScene.name}");
     }
 
-    /// <summary>
-    /// ✅ 문으로 다음 씬 넘어가기 직전에 호출하면 “이전 씬 체크포인트 잔상” 방지
-    /// </summary>
     public void PrepareForNewScene()
     {
         currentSpawnPoint = null;
@@ -52,7 +49,6 @@ public class SpawnManager : MonoBehaviour
     {
         Debug.Log($"[SpawnManager] OnSceneLoaded fired -> scene={scene.name}, mode={mode}");
 
-        // 새 씬 시작은 기본 스폰이 기준
         currentSpawnPoint = null;
         StartCoroutine(CoResolveSpawnThenTeleport(scene.name));
     }
@@ -62,12 +58,10 @@ public class SpawnManager : MonoBehaviour
         yield return null;
         yield return null;
 
-        // SpawnPoint 확정
         var sp = Object.FindFirstObjectByType<SpawnPoint>(FindObjectsInactive.Include);
         Debug.Log($"[SpawnManager] SpawnPoint found? {(sp != null)} in scene={sceneName}");
         if (sp != null) currentSpawnPoint = sp.transform;
 
-        // ✅ PlayerSingleton.Tr 준비될 때까지 최대 30프레임 대기
         int wait = 0;
         while (PlayerSingleton.Tr == null && wait < 30)
         {
@@ -75,7 +69,6 @@ public class SpawnManager : MonoBehaviour
             yield return null;
         }
 
-        // ✅ 그래도 없으면 태그로 직접 찾기 (플레이어 태그 꼭 "Player")
         if (PlayerSingleton.Tr == null)
         {
             var go = GameObject.FindGameObjectWithTag("Player");
@@ -105,7 +98,6 @@ public class SpawnManager : MonoBehaviour
         Debug.Log($"[SpawnManager] Teleport DONE -> {target}, spawn={(currentSpawnPoint ? currentSpawnPoint.name : "NULL")}, scene={sceneName}");
     }
 
-
     public void SetDefaultSpawn(Transform spawnPoint)
     {
         if (currentSpawnPoint == null)
@@ -119,26 +111,25 @@ public class SpawnManager : MonoBehaviour
 
     public Vector3 GetSpawnPosition()
     {
-        // SpawnPoint 못 찾으면 “현재 위치 유지”로 두는 게 안전 (0,0 점프 방지)
         if (currentSpawnPoint != null) return currentSpawnPoint.position;
         if (PlayerSingleton.Tr != null) return PlayerSingleton.Tr.position;
         return Vector3.zero;
     }
 
-    /// <summary>
-    /// ✅ PlayerLife.cs가 호출하는 Respawn 시그니처와 맞춤
-    /// </summary>
     public void Respawn(PlayerLife player)
     {
         if (player == null) return;
+        StartCoroutine(CoRespawn(player));
+    }
 
-        // 플레이어 콜라이더 잠깐 꺼서 즉시 재충돌 방지
+    private IEnumerator CoRespawn(PlayerLife player)
+    {
+        // 0) 콜라이더 잠깐 꺼서 "리스폰 즉시 재충돌/즉사" 방지
         Collider2D pc = player.GetComponent<Collider2D>();
         if (pc) pc.enabled = false;
 
-        // 스폰 위치로 이동
+        // 1) 스폰 위치로 이동 + 속도 초기화
         Vector3 target = GetSpawnPosition();
-
         Rigidbody2D prb = player.GetComponent<Rigidbody2D>();
         if (prb != null)
         {
@@ -151,10 +142,24 @@ public class SpawnManager : MonoBehaviour
             player.transform.position = target;
         }
 
-        // 체력 리셋
+        // 2) 체력 리셋
         player.ResetLifeToOne();
 
-        // 콜라이더 다시 켜기
+        // 3) 물리 한 프레임 정리
+        yield return new WaitForFixedUpdate();
+
+        // 4) 콜라이더 켜기 (이제 함정들이 "플레이어 겹침"을 감지할 수 있음)
         if (pc) pc.enabled = true;
+
+        // 5) 물리 한 프레임 더 진행 후 함정 리셋 (ArmWhenClear 안정화)
+        yield return new WaitForFixedUpdate();
+
+        // 6) 모든 장애물/함정 Reset
+        var monos = FindObjectsOfType<MonoBehaviour>(true);
+        foreach (var m in monos)
+        {
+            if (m is IResettable r)
+                r.ResetState();
+        }
     }
 }
