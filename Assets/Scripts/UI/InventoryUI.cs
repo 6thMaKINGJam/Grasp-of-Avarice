@@ -10,20 +10,19 @@ public class InventoryUI : MonoBehaviour
 
     private void Awake()
     {
-        if (inventory == null)
-            inventory = FindFirstObjectByType<PlayerInventory>();
+        inventory = PlayerInventory.Instance;
     }
 
     private void OnEnable()
     {
-        if (inventory == null)
-        inventory = FindFirstObjectByType<PlayerInventory>();
+        inventory = PlayerInventory.Instance;
 
         if (inventory == null) return;
 
         inventory.OnChanged += Refresh;
         Refresh();
     }
+
 
     private void OnDisable()
     {

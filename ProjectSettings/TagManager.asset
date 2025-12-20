@@ -9,6 +9,7 @@ TagManager:
   - Item
   - Bomb
   - Breakable
+  - NPC
   layers:
   - Default
   - TransparentFX
