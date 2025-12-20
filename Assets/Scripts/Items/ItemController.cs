@@ -11,6 +11,8 @@ public class ItemController : MonoBehaviour
 
     public List<Item> nearbyItems = new List<Item>();
 
+    [SerializeField] private PlayerInventory playerInventory;
+
     private void Awake(){
         Instance = this;
     }
@@ -44,8 +46,15 @@ public class ItemController : MonoBehaviour
             .FirstOrDefault();
         
         if(target != null){
-            target.OnPickedUp();
-            nearbyItems.Remove(target);
+            bool isAdded = playerInventory.TryAdd(target.itemData);
+            if(isAdded){
+                Debug.Log($"{target.itemData.itemName} ({target.instanceID})를 인벤토리에 넣음!");
+                target.OnPickedUp();
+                nearbyItems.Remove(target);
+            }
+            else{
+                Debug.Log($"인벤토리가 꽉 차서 {target.itemData.itemName} ({target.instanceID})를 못 넣음!");
+            }
         }
     }
 }
