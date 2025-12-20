@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,11 +9,11 @@ public class ItemController : MonoBehaviour
 {
     public static ItemController Instance;
     public List<Item> nearbyItems = new List<Item>();
-    private PlayerInventory playerInventory;
 
-    private void Awake()
-    {
-        // if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+    [SerializeField] private PlayerInventory playerInventory;
+    [SerializeField] private Transform playertransform;
+
+    private void Awake(){
         Instance = this;
         playerInventory = PlayerInventory.Instance;
     }
@@ -41,18 +43,8 @@ public class ItemController : MonoBehaviour
             if (nearbyItems.Count > 0) PickUpPriorityItem();
             else Debug.Log("남은 아이템이 없음!");
         }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            CleanupNearbyList();
-
-            Debug.Log($"주변 아이템 개수: {nearbyItems.Count}");
-            foreach (var item in nearbyItems)
-            {
-                string itemName = (item != null && item.itemData != null) ? item.itemData.itemName : "NULL_ITEM_OR_DATA";
-                int id = (item != null) ? item.instanceID : -1;
-                Debug.Log($"{itemName} ({id})");
-            }
+        if(Input.GetKeyDown(KeyCode.Q)){
+            DropLastItem();
         }
     }
 
@@ -107,6 +99,28 @@ public class ItemController : MonoBehaviour
         else
         {
             Debug.Log($"인벤토리가 꽉 차서 {target.itemData.itemName} ({target.instanceID})를 못 넣음!");
+        }
+    }
+
+    // 인벤토리에서 마지막 아이템을 제거하고 월드에 드롭
+    private void DropLastItem(){
+        if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
+            if(droppedItemData != null){
+                Vector3 spawnPos = playertransform.position;
+                spawnPos.y -= 0.1f;
+                spawnPos.z = 0f;
+
+                GameObject droppedItem = Instantiate(droppedItemData.worldPrefab, spawnPos, Quaternion.identity);
+
+                Item itemScript = droppedItem.GetComponent<Item>();
+                if(itemScript != null){
+                    itemScript.itemData = droppedItemData;
+                }
+                Debug.Log($"{droppedItemData.itemName}를 버림!");
+            }
+            else{
+                Debug.Log("버릴 아이템이 없음!");
+            }
         }
     }
 }
