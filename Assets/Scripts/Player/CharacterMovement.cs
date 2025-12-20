@@ -8,6 +8,7 @@ public class CharacterMovement : MonoBehaviour
     private Collider2D _collider;
     private SpriteRenderer _sprite;
     private Collider2D _currentLadder;
+    private Animator _animator;
 
     [Header("Move")]
     [SerializeField, Range(0.0f, 20.0f)] private float speed = 6f;
@@ -51,6 +52,7 @@ public class CharacterMovement : MonoBehaviour
         _rigidBody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         _sprite = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
 
         _rigidBody.gravityScale = gravity;
     }
@@ -131,12 +133,14 @@ public class CharacterMovement : MonoBehaviour
         _nextDirection = Vector2.zero;
         _rigidBody.velocity = Vector2.zero;
         _rigidBody.gravityScale = 0f;
+        //_animator.SetBool("IsClimbing", true);
     }
 
     public void EndClimbState()
     {
         _isClimbing = false;
         _rigidBody.gravityScale = gravity;
+        //_animator.SetBool("IsClimbing", false);
     }
 
     public bool IsClimbing() => _isClimbing;
@@ -165,6 +169,8 @@ public class CharacterMovement : MonoBehaviour
         {
             _currentLadder = other;
             ClimbState();
+            _animator.SetBool("IsClimbing", _isClimbing);
+            print(_isClimbing + "사다리 접촉");
         }
     }
 
@@ -174,6 +180,8 @@ public class CharacterMovement : MonoBehaviour
         {
             if (_currentLadder == other) _currentLadder = null;
             EndClimbState();
+            _animator.SetBool("IsClimbing", _isClimbing);
+            print(_isClimbing + "사다리에서 나옴");
         }
     }
 
