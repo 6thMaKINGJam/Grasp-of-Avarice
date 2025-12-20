@@ -116,6 +116,10 @@ public class ItemController : MonoBehaviour
                 Item itemScript = droppedItem.GetComponent<Item>();
                 if(itemScript != null){
                     itemScript.itemData = droppedItemData;
+                    
+                    // 플레이어가 버려서 객체가 생성된 경우
+                    itemScript.IsDroppedByPlayer = true;
+                    itemScript.OnDroppedByPlayer(); // 버려졌을 때의 동작 호출
                 }
                 Debug.Log($"{droppedItemData.itemName}를 버림!");
             }
