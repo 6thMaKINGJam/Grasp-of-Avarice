@@ -64,6 +64,7 @@ public class ItemController : MonoBehaviour
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
             if(droppedItemData != null){
                 Vector3 spawnPos = playertransform.position;
+                spawnPos.y -= 0.1f;
                 spawnPos.z = 0f;
 
                 GameObject droppedItem = Instantiate(droppedItemData.worldPrefab, spawnPos, Quaternion.identity);
