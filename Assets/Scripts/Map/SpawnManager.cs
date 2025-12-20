@@ -1,9 +1,11 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour
 {
-    public static SpawnManager Instance;
+    public static SpawnManager Instance { get; private set; }
+
+    [Header("Current Spawn")]
+    [SerializeField] private Transform currentSpawnPoint; // 지금 리스폰 위치
 
     private void Awake()
     {
@@ -12,30 +14,50 @@ public class SpawnManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnDestroy()
+    public void SetDefaultSpawn(Transform spawnPoint)
     {
-        if (Instance == this)
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+        // 맵 시작 스폰(디폴트). 아직 스폰이 없을 때만 세팅
+        if (currentSpawnPoint == null)
+            currentSpawnPoint = spawnPoint;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public void SetCheckpoint(Transform checkpoint)
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
+        currentSpawnPoint = checkpoint;
+    }
+
+    public Vector3 GetSpawnPosition()
+    {
+        return currentSpawnPoint != null ? currentSpawnPoint.position : Vector3.zero;
+    }
+
+    public void Respawn(PlayerLife player)
+    {
         if (player == null) return;
 
-        var spawn = Object.FindFirstObjectByType<SpawnPoint>();
-        if (spawn == null) return;
+        Collider2D pc = player.GetComponent<Collider2D>();
+        if (pc) pc.enabled = false;
 
-        // 위치 이동 (2D면 z값 유지하고 싶으면 아래처럼)
-        Vector3 p = spawn.transform.position;
-        p.z = player.transform.position.z;
-        player.transform.position = p;
+        // 1) 플레이어 먼저 스폰으로 이동
+        player.transform.position = GetSpawnPosition();
+        Rigidbody2D prb = player.GetComponent<Rigidbody2D>();
+        if (prb)
+        {
+            prb.velocity = Vector2.zero;
+            prb.angularVelocity = 0f;
+        }
+        player.ResetLifeToOne();
+
+        // 2) 그 다음 함정/가시 리셋
+        var monos = FindObjectsOfType<MonoBehaviour>(true);
+        foreach (var m in monos)
+            if (m is IResettable r) r.ResetState();
+
+        // 3) 콜라이더 다시 켜기
+        if (pc) pc.enabled = true;
     }
 }
