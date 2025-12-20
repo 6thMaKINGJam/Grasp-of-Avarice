@@ -8,6 +8,9 @@ public class InventoryUI : MonoBehaviour
     [Header("Slots")]
     [SerializeField] private InventorySlotUI[] slotUIs;
 
+    [Header("Collider Slots (matching index)")]
+    [SerializeField] private ColliderSlotUI[] colliderSlotUIs;
+
     private void Awake()
     {
         inventory = PlayerInventory.Instance;
@@ -21,13 +24,14 @@ public class InventoryUI : MonoBehaviour
 
         inventory.OnChanged += Refresh;
         Refresh();
+        SetColliderSlotsActive(false);
     }
-
 
     private void OnDisable()
     {
         if (inventory == null) return;
         inventory.OnChanged -= Refresh;
+        SetColliderSlotsActive(true);
     }
 
     private void Start()
@@ -51,6 +55,22 @@ public class InventoryUI : MonoBehaviour
         {
             var item = inventory.GetItem(i);
             slotUIs[i].SetItem(item);
+            if (item != null)
+                colliderSlotUIs[i].SetVisualsActive(true);
+            else
+                colliderSlotUIs[i].SetVisualsActive(false);
+        }
+    }
+
+    // slot 전체 끄고 켜고
+    private void SetColliderSlotsActive(bool active)
+    {
+        if (colliderSlotUIs == null) return;
+        int n = colliderSlotUIs.Length;
+        for (int i = 0; i < n; i++)
+        {
+            if (colliderSlotUIs[i] == null) continue;
+            colliderSlotUIs[i].SetVisualsActive(active);
         }
     }
 }
