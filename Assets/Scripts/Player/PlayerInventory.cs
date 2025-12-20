@@ -22,13 +22,19 @@ public class PlayerInventory : MonoBehaviour
 
     public int Capacity => Mathf.Max(1, capacity);
 
-     private void Awake()
-    {
-        EnsureInit();
-    }
+    public static PlayerInventory Instance;
 
-    private void OnEnable()
+    private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         EnsureInit();
     }
 
