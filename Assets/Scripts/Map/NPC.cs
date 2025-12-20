@@ -8,6 +8,7 @@ public class NPC : MonoBehaviour
     [SerializeField] private GameObject DialoguePanel;      
     [SerializeField] private TextMeshProUGUI DialogueText; 
     [TextArea] [SerializeField] private string message;
+    [SerializeField] private int neededCoin = 2;
 
     private void Awake()
     {
@@ -17,8 +18,30 @@ public class NPC : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
-        if (DialoguePanel != null) DialoguePanel.SetActive(true);
+        if (other.CompareTag("Player"))
+        {
+            if (DialoguePanel != null) DialoguePanel.SetActive(true);
+            UpdateDialogueText();
+        }
+        
+        if (other.CompareTag("Coin")){
+            Debug.Log("코인에 닿음");
+            Destroy(other.gameObject);
+            neededCoin -= 1;
+
+            UpdateDialogueText();
+        }
+        
+    }
+    private void UpdateDialogueText(){
+        if (DialogueText != null && neededCoin > 0){
+            DialogueText.text = "Coin " + neededCoin + "more needed";
+            Debug.Log("코인 " + neededCoin + "개 더 필요");
+        }
+        else{
+            DialogueText.text = "Door Open";
+            Debug.Log("문이 열림");
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)

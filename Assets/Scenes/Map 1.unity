@@ -427,6 +427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nearbyItems: []
   playerInventory: {fileID: 710092531}
+  playertransform: {fileID: 710092523}
 --- !u!4 &125992142
 Transform:
   m_ObjectHideFlags: 0
