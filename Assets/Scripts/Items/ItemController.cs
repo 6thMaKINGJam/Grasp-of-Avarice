@@ -11,8 +11,7 @@ public class ItemController : MonoBehaviour
     public List<Item> nearbyItems = new List<Item>();
 
     [SerializeField] private PlayerInventory playerInventory;
-    private Transform PlayerTr => PlayerSingleton.Tr;
-
+    [SerializeField] private Transform playertransform;
 
     private void Awake(){
         Instance = this;
@@ -107,7 +106,7 @@ public class ItemController : MonoBehaviour
     private void DropLastItem(){
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
             if(droppedItemData != null){
-                Vector3 spawnPos = PlayerTr.position;
+                Vector3 spawnPos = playertransform.position;
                 spawnPos.y -= 0.1f;
                 spawnPos.z = 0f;
 
@@ -116,10 +115,6 @@ public class ItemController : MonoBehaviour
                 Item itemScript = droppedItem.GetComponent<Item>();
                 if(itemScript != null){
                     itemScript.itemData = droppedItemData;
-                    
-                    // 플레이어가 버려서 객체가 생성된 경우
-                    itemScript.IsDroppedByPlayer = true;
-                    itemScript.OnDroppedByPlayer(); // 버려졌을 때의 동작 호출
                 }
                 Debug.Log($"{droppedItemData.itemName}를 버림!");
             }

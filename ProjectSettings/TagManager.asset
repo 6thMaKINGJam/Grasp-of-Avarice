@@ -11,6 +11,9 @@ TagManager:
   - Breakable
   - NPC
   - Key
+  - Feather
+  - Undefined
+  - Coin
   layers:
   - Default
   - TransparentFX
