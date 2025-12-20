@@ -8,7 +8,11 @@ public class PlayerController : MonoBehaviour
     private CharacterMovement _movement;
     private SpriteRenderer _sprite;
     public Vector2 MoveInput { get; private set; }  
-    public Vector2 ClimbInput { get; private set; } 
+    public Vector2 ClimbInput { get; private set; }
+
+    [Header("Pick")]
+    [SerializeField, Range(0.05f, 2f)] private float pickRadius = 0.5f; // 주워지는 반경
+    [SerializeField] private LayerMask itemMask = ~0; // 아이템 콜라이더만 검사
 
     private void Awake()
     {
@@ -59,6 +63,7 @@ public class PlayerController : MonoBehaviour
 
         // TODO: 소지품 줍기 (E버튼과 연결해둠)
         Debug.Log("[Input] Pick");
+        TryPickItem();
     }
 
     // --------------------------- Drop ---------------------------
@@ -68,5 +73,25 @@ public class PlayerController : MonoBehaviour
 
         // TODO: 소지품 버리기 (Q버튼과 연결해둠)
         Debug.Log("[Input] Drop");
+    }
+
+    private void TryPickItem()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, pickRadius, itemMask);
+        foreach (var col in hits)
+        {
+            if (col == null) continue;
+
+            // Collider에 붙은 Item 또는 부모에 붙은 Item을 찾음
+            Item item = col.GetComponent<Item>() ?? col.GetComponentInParent<Item>();
+            if (item != null)
+            {
+                item.OnPicked(gameObject);
+                Debug.Log($"[Pick] Picked item: {item.name}");
+                return;
+            }
+        }
+
+        Debug.Log("[Pick] No item in range");
     }
 }

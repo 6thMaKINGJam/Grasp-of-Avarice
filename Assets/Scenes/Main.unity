@@ -544,6 +544,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 990676157e0fb4bfa9eb30715d055c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickRadius: 0.5
+  itemMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &710092529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,7 +1110,7 @@ GameObject:
   - component: {fileID: 1731160913}
   - component: {fileID: 1731160912}
   - component: {fileID: 1731160911}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Box
   m_TagString: Box
   m_Icon: {fileID: 0}
