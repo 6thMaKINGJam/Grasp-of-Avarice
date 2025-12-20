@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class Box : MonoBehaviour
+public class Box : Item
 {
     [Header("Editor convenience")]
     [SerializeField] private bool ensureEffectorAndRb = true;
@@ -12,11 +12,11 @@ public class Box : MonoBehaviour
     private Rigidbody2D _rb;
     private PlatformEffector2D _effector;
 
-    // ±âº» ¹Ú½º »ı¼º ½Ã ¼³Á¤
-    // (itemData¸¦ »ç¿ëÇÏ°Ô µÇ¸é ÇÊ¿äÇÔ)
+    // ê¸°ë³¸ ë°•ìŠ¤ ìƒì„± ì‹œ ì„¤ì •
+    // (itemDataë¥¼ ì‚¬ìš©í•˜ê²Œ ë˜ë©´ í•„ìš”í•¨)
     private void Reset()
     {
-        // ¿¡µğÅÍ¿¡¼­ ÄÄÆ÷³ÍÆ® Ãß°¡ ½Ã ±âº» ¼³Á¤
+        // ì—ë””í„°ì—ì„œ ì»´í¬ë„ŒíŠ¸ ì¶”ê°€ ì‹œ ê¸°ë³¸ ì„¤ì •
         if (GetComponent<BoxCollider2D>() == null) // BoxCollider2D
             gameObject.AddComponent<BoxCollider2D>();
 
@@ -36,11 +36,11 @@ public class Box : MonoBehaviour
 
     private void Awake()
     {
-        // ÇÊ¿äÇÑ ÄÄÆ÷³ÍÆ® ±âº» ¼³Á¤
+        // í•„ìš”í•œ ì»´í¬ë„ŒíŠ¸ ê¸°ë³¸ ì„¤ì •
         _collider = GetComponent<BoxCollider2D>();
         if (_collider == null) _collider = gameObject.AddComponent<BoxCollider2D>();
 
-        // À§¿¡¼­ ¾Æ·¡·Î¸¸ Ãæµ¹ Ã³¸®ÇÏµµ·Ï ¼³Á¤
+        // ìœ„ì—ì„œ ì•„ë˜ë¡œë§Œ ì¶©ëŒ ì²˜ë¦¬í•˜ë„ë¡ ì„¤ì •
         _collider.isTrigger = false;
         _collider.usedByEffector = true;
 
@@ -48,16 +48,16 @@ public class Box : MonoBehaviour
         if (_effector == null)
             _effector = gameObject.AddComponent<PlatformEffector2D>();
 
-        // ±âº» ¼³Á¤: À§¿¡¼­ ÂøÁö °¡´É, ¾Æ·¡¿¡¼­ Åë°ú °¡´É
+        // ê¸°ë³¸ ì„¤ì •: ìœ„ì—ì„œ ì°©ì§€ ê°€ëŠ¥, ì•„ë˜ì—ì„œ í†µê³¼ ê°€ëŠ¥
         _effector.useOneWay = true;
         _effector.useOneWayGrouping = true;
-        _effector.surfaceArc = 90f; // À§ÂÊ »çºĞ¿ø ¿µ¿ª¿¡¼­¸¸ Ãæµ¹ Ã³¸®
+        _effector.surfaceArc = 90f; // ìœ„ìª½ ì‚¬ë¶„ì› ì˜ì—­ì—ì„œë§Œ ì¶©ëŒ ì²˜ë¦¬
 
         _rb = GetComponent<Rigidbody2D>();
         if (_rb == null)
             _rb = gameObject.AddComponent<Rigidbody2D>();
 
-        // ±âº»ÀûÀ¸·Î StaticÀ¸·Î µÖ¼­ ÇÃ·¹ÀÌ¾î¿¡ ¹Ğ¸®Áö ¾Ê°Ô ÇÔ
+        // ê¸°ë³¸ì ìœ¼ë¡œ Staticìœ¼ë¡œ ë‘¬ì„œ í”Œë ˆì´ì–´ì— ë°€ë¦¬ì§€ ì•Šê²Œ í•¨
         _rb.bodyType = RigidbodyType2D.Static;
         _rb.freezeRotation = true;
     }
