@@ -3782,7 +3782,7 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!95 &710092526
@@ -4021,6 +4021,8 @@ MonoBehaviour:
   capacity: 15
   fillOrder: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
   restartSceneName: Start
+  startingHat: {fileID: 11400000, guid: 95fa1f4b93ee51f4c897176ee363cc7b, type: 2}
+  upgradedHat: {fileID: 11400000, guid: 4f2e1fca18ad6f144b5033f9f048bd98, type: 2}
 --- !u!114 &710092532
 MonoBehaviour:
   m_ObjectHideFlags: 0

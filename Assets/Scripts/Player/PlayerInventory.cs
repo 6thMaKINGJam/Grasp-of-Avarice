@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,7 @@ public class PlayerInventory : MonoBehaviour
     public int Capacity => Mathf.Max(1, capacity);
 
     public static PlayerInventory Instance;
+    public ItemData startingHat;
 
     private void Awake()
     {
@@ -35,6 +37,10 @@ public class PlayerInventory : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         EnsureInit();
+        if(startingHat != null){
+            _slots[0] = startingHat;
+            Debug.Log($"시작할 때 {startingHat.itemName}을(를) 착용했습니다.");
+        }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -57,6 +63,10 @@ public class PlayerInventory : MonoBehaviour
         // OnChanged?.Invoke();
     }
 
+    private void Start()
+    {
+        OnChanged?.Invoke();
+    }
     private void OnValidate()
     {
         if (capacity <= 0) capacity = 1;
@@ -144,6 +154,18 @@ public class PlayerInventory : MonoBehaviour
             if (_slots[slotIndex] != null) return slotIndex;
         }
         return -1;
+    }
+
+    public ItemData upgradedHat;
+    public void UpgradeHat()
+    {
+        EnsureInit();
+        if (upgradedHat != null)
+        {
+            _slots[0] = upgradedHat;
+            OnChanged?.Invoke();
+            Debug.Log($"모자가 업그레이드되었습니다!");
+        }
     }
 
     private void TriggerGameOver()

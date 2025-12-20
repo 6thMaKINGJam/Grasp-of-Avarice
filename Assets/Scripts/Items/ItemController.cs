@@ -133,59 +133,40 @@ public class ItemController : MonoBehaviour
         }
     }
 
-    private void DropLastItem()
-    {
-        if (playerInventory == null)
-            playerInventory = PlayerInventory.Instance;
+    // 인벤토리에서 마지막 아이템을 제거하고 월드에 드롭
+    private void DropLastItem(){
+        int lastSlotIndex = playerInventory.GetLastFilledIndex();
 
-        if (playerInventory == null)
-        {
-            Debug.LogError("Drop 실패: PlayerInventory.Instance가 null입니다.");
-            return;
-        }
-
-        if (playertransform == null)
-            playertransform = PlayerSingleton.Tr;
-
-        if (playertransform == null)
-        {
-            Debug.LogError("Drop 실패: playertransform이 null입니다. PlayerSingleton.Tr 또는 Player 태그 확인!");
-            return;
-        }
-
-        if (playerInventory.TryRemoveLastFilled(out ItemData droppedItemData))
-        {
-            if (droppedItemData == null)
-            {
-                Debug.Log("버릴 아이템이 없음!");
-                return;
-            }
-
-            if (droppedItemData.worldPrefab == null)
-            {
-                Debug.LogError($"{droppedItemData.itemName}의 worldPrefab이 비어있습니다. ItemData에 프리팹을 연결하세요.");
-                return;
-            }
-
-            Vector3 spawnPos = playertransform.position;
-            spawnPos.y -= 0.1f;
-            spawnPos.z = 0f;
-
-            GameObject droppedItem = Instantiate(droppedItemData.worldPrefab, spawnPos, Quaternion.identity);
-
-            Item itemScript = droppedItem.GetComponent<Item>();
-            if (itemScript != null)
-            {
-                itemScript.itemData = droppedItemData;
-                itemScript.IsDroppedByPlayer = true;
-                itemScript.OnDroppedByPlayer();
-            }
-
-            Debug.Log($"{droppedItemData.itemName}를 버림!");
-        }
-        else
-        {
+        if(lastSlotIndex == -1){
             Debug.Log("버릴 아이템이 없음!");
+            return;
+        }
+        
+        ItemData dataToCheck = playerInventory.GetItem(lastSlotIndex);
+
+        if(dataToCheck != null){
+            if(!dataToCheck.canDrop){
+                Debug.Log($"{dataToCheck.itemName}은(는) 버릴 수 없는 아이템입니다!");
+                return;
+            }
+        }
+
+         // 인벤토리 참조 보장
+        if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
+            if(droppedItemData != null){
+                Vector3 spawnPos = playertransform.position;
+                spawnPos.y -= 0.1f;
+                spawnPos.z = 0f;
+
+                Debug.Log($"{droppedItemData.itemName}를 버림!");
+                GameObject droppedItem = Instantiate(droppedItemData.worldPrefab, spawnPos, Quaternion.identity);
+                Item itemScript = droppedItem.GetComponent<Item>();
+                if(itemScript != null){
+                    itemScript.itemData = droppedItemData;
+                    itemScript.IsDroppedByPlayer = true;
+                    itemScript.OnDroppedByPlayer();
+                }
+            }
         }
     }
 }
