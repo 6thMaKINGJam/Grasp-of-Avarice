@@ -7,6 +7,8 @@ TagManager:
   - Ladder
   - Box
   - Item
+  - Bomb
+  - Breakable
   layers:
   - Default
   - TransparentFX
@@ -16,8 +18,8 @@ TagManager:
   - UI
   - Ground
   - Box
-  - 
-  - 
+  - BreakableTile
+  - Bomb
   - 
   - 
   - 
