@@ -757,7 +757,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nearbyItems: []
   playerInventory: {fileID: 710092531}
-  playertransform: {fileID: 0}
+  playertransform: {fileID: 710092523}
 --- !u!4 &125992142
 Transform:
   m_ObjectHideFlags: 0
@@ -1530,6 +1530,7 @@ GameObject:
   - component: {fileID: 192465677}
   - component: {fileID: 192465676}
   - component: {fileID: 192465675}
+  - component: {fileID: 192465678}
   - component: {fileID: 192465674}
   m_Layer: 0
   m_Name: NPC
@@ -1551,7 +1552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DialoguePanel: {fileID: 406740544}
-  DialogueText: {fileID: 0}
+  DialogueText: {fileID: 1771820605}
   message: give me money
   neededCoin: 2
 --- !u!61 &192465675
@@ -1667,6 +1668,33 @@ Transform:
   - {fileID: 324860340}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &192465678
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192465673}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &208635733
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3654,6 +3682,7 @@ GameObject:
   - component: {fileID: 710092531}
   - component: {fileID: 710092532}
   - component: {fileID: 710092533}
+  - component: {fileID: 710092534}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -3751,7 +3780,7 @@ Animator:
   m_GameObject: {fileID: 710092522}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6b30c049406e7224781140aa5eaa8bbc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -4004,6 +4033,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 1
+--- !u!114 &710092534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710092522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d658d91df2ebb4d8499619212a5684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 710092526}
 --- !u!61 &724284854 stripped
 BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 310174359159466031, guid: f124b9e18f9cc404882753442419d3e0, type: 3}
@@ -5023,7 +5065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 898387859895139663, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_TagString
-      value: Item
+      value: Coin
       objectReference: {fileID: 0}
     - target: {fileID: 5543957739510044274, guid: 10fe7b04e10c2474aae8d82369adf743, type: 3}
       propertyPath: m_LocalPosition.x
