@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[DefaultExecutionOrder(-100)] 
+[DefaultExecutionOrder(-100)]
 public class PlayerInventory : MonoBehaviour
 {
     [Header("Inventory")]
@@ -13,7 +13,6 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private int[] fillOrder;
 
     [Header("Game Over")]
-    [Tooltip("인벤토리가 꽉 찬 상태에서 아이템을 더 주우면 이 씬으로 이동")]
     [SerializeField] private string restartSceneName = "Main";
 
     private ItemData[] _slots;
@@ -42,6 +41,26 @@ public class PlayerInventory : MonoBehaviour
             _slots[0] = startingHat;
             Debug.Log($"시작할 때 {startingHat.itemName}을(를) 착용했습니다.");
         }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        EnsureInit();
+
+        int filled = 0;
+        for (int i = 0; i < _slots.Length; i++)
+            if (_slots[i] != null) filled++;
+
+        Debug.Log($"[Inventory] filled={filled}/{_slots.Length}");
+        // 필요하면 여기서 OnChanged를 한 번 강제 호출해도 됨:
+        // OnChanged?.Invoke();
     }
 
     private void Start()
@@ -73,14 +92,10 @@ public class PlayerInventory : MonoBehaviour
     public ItemData GetItem(int index)
     {
         EnsureInit();
-
         if (index < 0 || index >= _slots.Length) return null;
         return _slots[index];
     }
 
-    /// <summary>
-    /// fillOrder 순서대로 빈칸을 찾아 채움
-    /// </summary>
     public bool TryAdd(ItemData item)
     {
         EnsureInit();
@@ -103,9 +118,6 @@ public class PlayerInventory : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    /// 스택(LIFO): fillOrder 역순으로 훑어서 마지막으로 채워진 슬롯을 제거
-    /// </summary>
     public bool TryRemoveLastFilled(out ItemData removedItem, out int removedSlotIndex)
     {
         removedItem = null;
@@ -133,9 +145,6 @@ public class PlayerInventory : MonoBehaviour
         return TryRemoveLastFilled(out removedItem, out _);
     }
 
-    /// <summary>
-    /// (선택) UI 하이라이트용: 지금 "가장 최근 아이템"이 들어있는 슬롯 인덱스
-    /// </summary>
     public int GetLastFilledIndex()
     {
         for (int k = fillOrder.Length - 1; k >= 0; k--)

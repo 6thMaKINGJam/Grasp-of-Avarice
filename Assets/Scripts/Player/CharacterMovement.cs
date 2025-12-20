@@ -8,6 +8,7 @@ public class CharacterMovement : MonoBehaviour
     private Collider2D _collider;
     private SpriteRenderer _sprite;
     private Collider2D _currentLadder;
+    private Animator _animator;
 
     [Header("Move")]
     [SerializeField, Range(0.0f, 20.0f)] private float speed = 6f;
@@ -35,6 +36,21 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float ladderMaxAlignSpeed = 3f; 
     [SerializeField] private float ladderAlignAccel = 30f;
 
+    public enum JumpState
+    {
+        Grounded,
+        PrepareToJump,
+        Jumping,
+        InFlight,
+        Landed
+    }
+
+    [SerializeField] private float jumpDeceleration = 0.5f;
+    private JumpState jumpState = JumpState.Grounded;
+    private bool stopJump;
+    private bool jump;
+
+
     private Vector2 _nextDirection;     // 인풋 방향
     private Vector2 _currentVelocity;   // 이동 속도
 
@@ -51,13 +67,31 @@ public class CharacterMovement : MonoBehaviour
         _rigidBody = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
         _sprite = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
 
         _rigidBody.gravityScale = gravity;
     }
 
     private void FixedUpdate()
     {
+        UpdateJumpState();
         _isGround = CheckIsGround();
+
+        if (jump && _isGround)
+        {
+            _rigidBody.velocity = new Vector2(
+                _rigidBody.velocity.x,
+                defaultJumpPower
+            );
+            jump = false;
+        }
+        else if (stopJump)
+        {
+            stopJump = false;
+            if (_rigidBody.velocity.y > 0)
+                _rigidBody.velocity *= new Vector2(1f, jumpDeceleration);
+        }
+
 
         if (_isClimbing)
         {
@@ -96,12 +130,48 @@ public class CharacterMovement : MonoBehaviour
 
     private void Update()
     {
+        _nextDirection.x = Input.GetAxis("Horizontal");
+
+        if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
+            jumpState = JumpState.PrepareToJump;
+
+        if (Input.GetButtonUp("Jump"))
+            stopJump = true;
+
         // 박스 위에 서 있을 때 D 누르면 박스와의 충돌을 일시 해제하여 아래로 내려가도록 처리
         if (_standingBoxCollider != null && Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("S키 눌림, 박스 충돌 무시 시작");
             if (_ignoreBoxCoroutine == null)
                 _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
+        }
+    }
+
+    private void UpdateJumpState()
+    {
+        jump = false;
+
+        switch (jumpState)
+        {
+            case JumpState.PrepareToJump:
+                jumpState = JumpState.Jumping;
+                jump = true;
+                stopJump = false;
+                break;
+
+            case JumpState.Jumping:
+                if (!_isGround)
+                    jumpState = JumpState.InFlight;
+                break;
+
+            case JumpState.InFlight:
+                if (_isGround)
+                    jumpState = JumpState.Landed;
+                break;
+
+            case JumpState.Landed:
+                jumpState = JumpState.Grounded;
+                break;
         }
     }
 
@@ -131,12 +201,14 @@ public class CharacterMovement : MonoBehaviour
         _nextDirection = Vector2.zero;
         _rigidBody.velocity = Vector2.zero;
         _rigidBody.gravityScale = 0f;
+        //_animator.SetBool("IsClimbing", true);
     }
 
     public void EndClimbState()
     {
         _isClimbing = false;
         _rigidBody.gravityScale = gravity;
+        //_animator.SetBool("IsClimbing", false);
     }
 
     public bool IsClimbing() => _isClimbing;
@@ -165,6 +237,8 @@ public class CharacterMovement : MonoBehaviour
         {
             _currentLadder = other;
             ClimbState();
+            _animator.SetBool("IsClimbing", _isClimbing);
+            print(_isClimbing + "사다리 접촉");
         }
     }
 
@@ -174,6 +248,8 @@ public class CharacterMovement : MonoBehaviour
         {
             if (_currentLadder == other) _currentLadder = null;
             EndClimbState();
+            _animator.SetBool("IsClimbing", _isClimbing);
+            print(_isClimbing + "사다리에서 나옴");
         }
     }
 
