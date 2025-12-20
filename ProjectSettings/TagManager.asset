@@ -7,6 +7,8 @@ TagManager:
   - Ladder
   - Box
   - Item
+  - Bomb
+  - Breakable
   - NPC
   layers:
   - Default
@@ -17,8 +19,8 @@ TagManager:
   - UI
   - Ground
   - Box
-  - 
-  - 
+  - BreakableTile
+  - Bomb
   - 
   - 
   - 
