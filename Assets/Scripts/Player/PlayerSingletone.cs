@@ -15,4 +15,10 @@ public class PlayerSingleton : MonoBehaviour
         Tr = transform;
         DontDestroyOnLoad(gameObject);
     }
+
+    private void OnDestroy()
+    {
+        if (Tr == transform)
+            Tr = null;
+    }
 }

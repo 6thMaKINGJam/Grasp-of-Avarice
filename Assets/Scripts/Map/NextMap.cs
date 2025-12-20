@@ -11,6 +11,11 @@ public class NextMap : MonoBehaviour
     {
         if (canGo && neededKey <= 0 && Input.GetKeyDown(KeyCode.W))
         {
+            canGo = false;
+
+            if (SpawnManager.Instance != null)
+                SpawnManager.Instance.PrepareForNewScene();
+
             SceneManager.LoadScene(nextSceneName);
         }
     }
@@ -27,7 +32,7 @@ public class NextMap : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             canGo = true;
-            
+
             if (neededKey > 0)
                 Debug.Log("열쇠가 필요하다!");
             else
@@ -38,8 +43,6 @@ public class NextMap : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-        {
             canGo = false;
-        }
     }
 }
