@@ -11,7 +11,8 @@ public class ItemController : MonoBehaviour
     public List<Item> nearbyItems = new List<Item>();
 
     [SerializeField] private PlayerInventory playerInventory;
-    [SerializeField] private Transform playertransform;
+    private Transform PlayerTr => PlayerSingleton.Tr;
+
 
     private void Awake(){
         Instance = this;
@@ -106,7 +107,7 @@ public class ItemController : MonoBehaviour
     private void DropLastItem(){
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
             if(droppedItemData != null){
-                Vector3 spawnPos = playertransform.position;
+                Vector3 spawnPos = PlayerTr.position;
                 spawnPos.y -= 0.1f;
                 spawnPos.z = 0f;
 
