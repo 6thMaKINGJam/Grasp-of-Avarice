@@ -51,7 +51,7 @@ public class Box : Item
         // 기본 설정: 위에서 착지 가능, 아래에서 통과 가능
         _effector.useOneWay = true;
         _effector.useOneWayGrouping = true;
-        _effector.surfaceArc = 90f; // 위쪽 사분원 영역에서만 충돌 처리
+        _effector.surfaceArc = 150f; // 위쪽 사분원 영역에서만 충돌 처리
 
         _rb = GetComponent<Rigidbody2D>();
         if (_rb == null)
