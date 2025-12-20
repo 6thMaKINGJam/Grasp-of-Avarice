@@ -21,6 +21,12 @@ public class ItemController : MonoBehaviour
             if(nearbyItems.Count > 0)    PickUpPriorityItem();
             else    Debug.Log("남은 아이템이 없음!");
         }
+        if(Input.GetKeyDown(KeyCode.Q)){
+            Debug.Log($"주변 아이템 개수: {nearbyItems.Count}");
+            foreach(var item in nearbyItems){
+                Debug.Log($"{item.itemData.itemName} ({item.instanceID})를 버림");
+            }
+        }
     }
 
     public void AddItemToNearby(Item item){
