@@ -3,12 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class NextMap : MonoBehaviour
 {
+    private int neededKey = 1;
     [SerializeField] private string nextSceneName;
     private bool canGo = false;
 
     private void Update()
     {
-        if (canGo && Input.GetKeyDown(KeyCode.W))
+        if (canGo && neededKey <= 0 && Input.GetKeyDown(KeyCode.W))
         {
             SceneManager.LoadScene(nextSceneName);
         }
@@ -16,10 +17,21 @@ public class NextMap : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Key"))
+        {
+            Debug.Log("키로 문을 열어보쟈");
+            Destroy(other.gameObject);
+            neededKey--;
+        }
+
         if (other.CompareTag("Player"))
         {
             canGo = true;
-            Debug.Log("W 키를 눌러 이동");
+            
+            if (neededKey > 0)
+                Debug.Log("열쇠가 필요하다!");
+            else
+                Debug.Log("W 키를 눌러 이동");
         }
     }
 
