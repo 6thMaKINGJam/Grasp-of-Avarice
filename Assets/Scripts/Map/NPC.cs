@@ -45,10 +45,11 @@ public class NPC : MonoBehaviour
                 DialogueText.text = $"Coin {neededCoin} more needed";
                 Debug.Log("Coin " + neededCoin + "개 더 필요");
             }
+            else{
+                DialogueText.text = "Door Open";
+                Debug.Log("문 열림");
+            }
         }
-        else{
-            DialogueText.text = "Door Open";
-            Debug.Log("문 열림");
-        }
+        
     }
 }
