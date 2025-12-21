@@ -17,6 +17,7 @@ TagManager:
   - Hat
   - Wall
   - Collider
+  - Gem
   layers:
   - Default
   - TransparentFX
