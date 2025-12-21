@@ -7,6 +7,7 @@ public class NPC : MonoBehaviour
 {
     [SerializeField] private GameObject DialoguePanel;      
     [SerializeField] private TextMeshProUGUI DialogueText; 
+    [SerializeField] private GameObject coinWall;
     [TextArea] [SerializeField] private string message;
     [SerializeField] private int neededCoin = 2;
 
@@ -48,6 +49,7 @@ public class NPC : MonoBehaviour
             else{
                 DialogueText.text = "Door Open";
                 Debug.Log("문 열림");
+                if (coinWall != null)    Destroy(coinWall);
             }
         }
         
