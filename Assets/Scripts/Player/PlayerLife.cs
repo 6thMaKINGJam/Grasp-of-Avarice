@@ -6,13 +6,13 @@ public class PlayerLife : MonoBehaviour
 
     public void TakeDamage(int dmg)
     {
-        print("Take Damage È£ÃâµÊ");
+        print("Take Damage È£ï¿½ï¿½ï¿½");
         hp -= dmg;
         if (hp <= 0)
-            {
+        {
             AudioManager.Instance?.PlaySfx(SfxType.GameOver);
             SpawnManager.Instance.Respawn(this);
-            }
+        }
     }   
 
     public void ResetLifeToOne()

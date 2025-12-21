@@ -150,16 +150,5 @@ public class SpawnManager : MonoBehaviour
 
         // 4) 콜라이더 켜기 (이제 함정들이 "플레이어 겹침"을 감지할 수 있음)
         if (pc) pc.enabled = true;
-
-        // 5) 물리 한 프레임 더 진행 후 함정 리셋 (ArmWhenClear 안정화)
-        yield return new WaitForFixedUpdate();
-
-        // 6) 모든 장애물/함정 Reset
-        var monos = FindObjectsOfType<MonoBehaviour>(true);
-        foreach (var m in monos)
-        {
-            if (m is IResettable r)
-                r.ResetState();
-        }
     }
 }
