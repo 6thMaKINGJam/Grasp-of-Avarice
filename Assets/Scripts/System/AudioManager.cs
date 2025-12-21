@@ -208,4 +208,30 @@ public class AudioManager : MonoBehaviour
 
         Destroy(sfx, data.clip.length + 0.05f);
     }
+
+    public void FadeOutBgm(float time)
+    {
+        if (!userUnlockedAudio) return;
+
+        if (fadeCo != null) StopCoroutine(fadeCo);
+        fadeCo = StartCoroutine(FadeOutOnly(time));
+    }
+
+    private IEnumerator FadeOutOnly(float time)
+    {
+        float t = 0f;
+        float startVol = bgm.volume;
+
+        while (t < time)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = (time <= 0f) ? 1f : Mathf.Clamp01(t / time);
+            bgm.volume = Mathf.Lerp(startVol, 0f, k);
+            yield return null;
+        }
+
+        bgm.volume = 0f;
+        bgm.Stop();
+        fadeCo = null;
+    }
 }
