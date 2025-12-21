@@ -17,7 +17,7 @@ public class FeatherUI : MonoBehaviour
     public void UpdateFeatherCount()
     {
         currentFeatherCount++;
-        if(featherCountText != null)    featherCountText.text = "Feathers: " + currentFeatherCount.ToString();
+        if(featherCountText != null)    featherCountText.text = currentFeatherCount.ToString();
         else Debug.LogWarning("FeatherUI: featherCountText is not assigned!");
     }
     public void ResetFeatherCount()
