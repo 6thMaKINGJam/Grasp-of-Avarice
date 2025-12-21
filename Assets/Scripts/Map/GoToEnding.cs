@@ -70,6 +70,6 @@ public class GoToEnding : MonoBehaviour
     IEnumerator LoadEndingDelayed()
     {
         yield return new WaitForSeconds(1.5f);
-        SceneLoader.Load("Ending");
+        SceneLoader.Load("End");
     }
 }
