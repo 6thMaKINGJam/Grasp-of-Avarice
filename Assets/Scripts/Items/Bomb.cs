@@ -34,7 +34,7 @@ public class Bomb : Item
         if (_hasExploded) return; // 중복 호출 방지
         _hasExploded = true;
 
-        float breakRadius = 1.1f;
+        float breakRadius = 0.6f;
         Vector3 bombPos = transform.position;
 
         // 등록된 모든 BreakableTilemap을 검사
