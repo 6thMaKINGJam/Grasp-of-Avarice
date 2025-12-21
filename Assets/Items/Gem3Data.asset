@@ -16,4 +16,4 @@ MonoBehaviour:
   itemType: 7
   icon: {fileID: -69408701, guid: e2357b26126e72d4e9bfcc65328ea672, type: 3}
   canDrop: 1
-  worldPrefab: {fileID: 0}
+  worldPrefab: {fileID: 526883576141323765, guid: 1f2f9d130d80143409f7992e349a4f70, type: 3}
