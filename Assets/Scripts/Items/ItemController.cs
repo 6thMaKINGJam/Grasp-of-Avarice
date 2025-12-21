@@ -15,6 +15,9 @@ public class ItemController : MonoBehaviour
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private Transform playertransform;
 
+    [Header("Ending Gate")]
+    [SerializeField] private bool dropHat = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -144,12 +147,15 @@ public class ItemController : MonoBehaviour
         
         ItemData dataToCheck = playerInventory.GetItem(lastSlotIndex);
 
-        if(dataToCheck != null){
-            if(!dataToCheck.canDrop){
+        if (dataToCheck != null)
+        {
+            if (!dataToCheck.canDrop && !dropHat)
+            {
                 Debug.Log($"{dataToCheck.itemName}은(는) 버릴 수 없는 아이템입니다!");
                 return;
             }
         }
+
 
          // 인벤토리 참조 보장
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
@@ -169,4 +175,10 @@ public class ItemController : MonoBehaviour
             }
         }
     }
+
+    public void SetEndingDropPermission(bool allow)
+    {
+        dropHat = allow;
+    }
+
 }
