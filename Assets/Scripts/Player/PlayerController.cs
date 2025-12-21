@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     // --------------------------- Jump ---------------------------
     public void OnJump(InputAction.CallbackContext ctx)
     {
+        AudioManager.Instance?.PlaySfx(SfxType.Jump);
         if (!ctx.performed) return;
 
         _movement.Jump();
