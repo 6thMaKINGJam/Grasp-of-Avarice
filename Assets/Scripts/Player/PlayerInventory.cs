@@ -112,6 +112,9 @@ public class PlayerInventory : MonoBehaviour
             if (_slots[slotIndex] == null)
             {
                 _slots[slotIndex] = item;
+
+                CheckInventoryCount();
+
                 OnChanged?.Invoke();
                 print(slotIndex + "번 슬롯에 " + item.itemName + " 아이템 추가됨");
                 if (k == fillOrder.Length - 1)
@@ -126,6 +129,40 @@ public class PlayerInventory : MonoBehaviour
         //playerLife.TakeDamage(1);
         TriggerGameOver();
         return false;
+    }
+
+    // 무게에 따라 애니메이션 변경을 위한 이벤트 (+디버그 로그)
+
+    public event Action<int> OnWeightLevelChanged; // 0: 가벼움, 1: Heavy1, 2: Heavy2
+
+    private void CheckInventoryCount()
+    {
+        int currentCount = GetCurrentItemCount();
+        int weightLevel = 0;
+
+        if (currentCount >= 10) weightLevel = 2;
+        else if (currentCount >= 5) weightLevel = 1;
+        else weightLevel = 0;
+
+        // 이벤트를 구독 중인 플레이어(애니메이터)에게 알림
+        OnWeightLevelChanged?.Invoke(weightLevel);
+
+        // 디버그 로그
+        switch(weightLevel)
+        {
+            case 0: Debug.Log(currentCount + "개 -> 아이템 5개 이하: 평소 가벼운 상태"); break;
+            case 1: Debug.Log(currentCount + "개 -> 아이템 5~9개 보유: Heavy 1 상태"); break;
+            case 2: Debug.Log(currentCount + "개 -> 아이템 10개 이상 보유: Heavy 2 상태"); break;
+        }
+    }
+
+    // 현재 인벤토리에 들어있는 아이템 개수 반환
+    private int GetCurrentItemCount(){
+        int count = 0;
+        for (int i = 0; i < _slots.Length; i++){
+            if (_slots[i] != null) count++;
+        }
+        return count;
     }
 
     public bool TryRemoveLastFilled(out ItemData removedItem, out int removedSlotIndex)
@@ -143,6 +180,9 @@ public class PlayerInventory : MonoBehaviour
                 removedItem = _slots[slotIndex];
                 removedSlotIndex = slotIndex;
                 _slots[slotIndex] = null;
+
+                CheckInventoryCount();
+
                 OnChanged?.Invoke();
                 return true;
             }
