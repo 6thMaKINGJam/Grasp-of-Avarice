@@ -23,7 +23,6 @@ public class AudioManager : MonoBehaviour
     public float fadeTime = 0.8f;
 
     [Header("BGM Auto Change Skip Scenes")]
-    [Tooltip("These scenes will NOT auto-change BGM on load. (BGM continues as-is)")]
     public List<string> bgmSkipScenes = new List<string> { "Start" };
 
     // ---------------- SFX ----------------
@@ -41,16 +40,19 @@ public class AudioManager : MonoBehaviour
     [Header("SFX")]
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
-    private Dictionary<SfxType, SfxData> sfxMap;
-
     // ---------------- Internals ----------------
     private AudioSource bgm;
     private Dictionary<string, SceneBgm> bgmMap;
+    private Dictionary<SfxType, SfxData> sfxMap;
     private Coroutine fadeCo;
+
+    // 🔒 WebGL autoplay lock
+    private bool userUnlockedAudio = false;
+    private SceneBgm pendingBgm; // 유저 입력 전 대기 중인 BGM
 
     void Awake()
     {
-        // 싱글톤
+        // Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -59,14 +61,14 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // BGM AudioSource
+        // BGM source
         bgm = gameObject.AddComponent<AudioSource>();
         bgm.loop = true;
         bgm.playOnAwake = false;
-        bgm.spatialBlend = 0f; // 2D
+        bgm.spatialBlend = 0f;
         bgm.volume = 0f;
 
-        // BGM 테이블 맵
+        // Maps
         bgmMap = new Dictionary<string, SceneBgm>();
         foreach (var b in sceneBgms)
         {
@@ -74,7 +76,6 @@ public class AudioManager : MonoBehaviour
                 bgmMap.Add(b.sceneName, b);
         }
 
-        // SFX 테이블 맵
         sfxMap = new Dictionary<SfxType, SfxData>();
         foreach (var s in sfxList)
         {
@@ -83,9 +84,6 @@ public class AudioManager : MonoBehaviour
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-        // ✅ 앱 시작 시 현재 씬의 BGM 1회 적용 (Start/Intro 어디서 실행해도 안정)
-        ApplyBgmForScene(SceneManager.GetActiveScene().name);
     }
 
     void OnDestroy()
@@ -94,19 +92,43 @@ public class AudioManager : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    void Update()
     {
-        ApplyBgmForScene(scene.name);
+        // 🔓 첫 유저 입력으로 오디오 잠금 해제
+        if (!userUnlockedAudio && (Input.anyKeyDown || Input.GetMouseButtonDown(0)))
+        {
+            UnlockAudio();
+        }
     }
 
-    private void ApplyBgmForScene(string sceneName)
+    private void UnlockAudio()
     {
-        // ✅ Start 씬은 자동 BGM 변경 스킵 → Intro에서 시작한 곡 계속 유지
-        if (bgmSkipScenes != null && bgmSkipScenes.Contains(sceneName))
+        userUnlockedAudio = true;
+
+        // 대기 중이던 BGM 있으면 이제 재생
+        if (pendingBgm != null)
+        {
+            PlayBgmInternal(pendingBgm.clip, pendingBgm.volume);
+            pendingBgm = null;
+        }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (bgmSkipScenes != null && bgmSkipScenes.Contains(scene.name))
             return;
 
-        if (bgmMap.TryGetValue(sceneName, out var data))
-            PlayBgm(data.clip, data.volume);
+        if (bgmMap.TryGetValue(scene.name, out var data))
+        {
+            // 🔒 아직 유저 입력 없으면 대기
+            if (!userUnlockedAudio)
+            {
+                pendingBgm = data;
+                return;
+            }
+
+            PlayBgmInternal(data.clip, data.volume);
+        }
     }
 
     // ---------------- BGM API ----------------
@@ -114,50 +136,28 @@ public class AudioManager : MonoBehaviour
     {
         if (clip == null) return;
 
-        // ✅ 같은 곡이면 "재시작 금지" + 볼륨만 맞추기
+        if (!userUnlockedAudio)
+        {
+            // 유저 입력 전이면 예약만
+            pendingBgm = new SceneBgm { clip = clip, volume = targetVolume };
+            return;
+        }
+
+        PlayBgmInternal(clip, targetVolume);
+    }
+
+    private void PlayBgmInternal(AudioClip clip, float targetVolume)
+    {
+        // 같은 곡이면 재시작 금지
         if (bgm.clip == clip)
         {
-            if (fadeCo != null) StopCoroutine(fadeCo);
-
-            if (!bgm.isPlaying) bgm.Play(); // 혹시 멈춰있으면만 재생
+            if (!bgm.isPlaying) bgm.Play();
             bgm.volume = targetVolume;
             return;
         }
 
         if (fadeCo != null) StopCoroutine(fadeCo);
         fadeCo = StartCoroutine(FadeSwap(clip, targetVolume, fadeTime));
-    }
-
-    public void StopBgm()
-    {
-        if (fadeCo != null) StopCoroutine(fadeCo);
-        bgm.Stop();
-        bgm.clip = null;
-        bgm.volume = 0f;
-    }
-
-    public void FadeOutBgm(float time)
-    {
-        if (fadeCo != null) StopCoroutine(fadeCo);
-        fadeCo = StartCoroutine(FadeOutOnly(time));
-    }
-
-    IEnumerator FadeOutOnly(float time)
-    {
-        float t = 0f;
-        float startVol = bgm.volume;
-
-        while (t < time)
-        {
-            t += Time.unscaledDeltaTime;
-            float k = (time <= 0f) ? 1f : Mathf.Clamp01(t / time);
-            bgm.volume = Mathf.Lerp(startVol, 0f, k);
-            yield return null;
-        }
-
-        bgm.volume = 0f;
-        bgm.Stop();
-        fadeCo = null;
     }
 
     IEnumerator FadeSwap(AudioClip next, float targetVol, float time)
@@ -171,8 +171,7 @@ public class AudioManager : MonoBehaviour
             while (t < time)
             {
                 t += Time.unscaledDeltaTime;
-                float k = (time <= 0f) ? 1f : Mathf.Clamp01(t / time);
-                bgm.volume = Mathf.Lerp(startVol, 0f, k);
+                bgm.volume = Mathf.Lerp(startVol, 0f, t / time);
                 yield return null;
             }
         }
@@ -187,8 +186,7 @@ public class AudioManager : MonoBehaviour
         while (t < time)
         {
             t += Time.unscaledDeltaTime;
-            float k = (time <= 0f) ? 1f : Mathf.Clamp01(t / time);
-            bgm.volume = Mathf.Lerp(0f, targetVol, k);
+            bgm.volume = Mathf.Lerp(0f, targetVol, t / time);
             yield return null;
         }
         bgm.volume = targetVol;
@@ -199,7 +197,8 @@ public class AudioManager : MonoBehaviour
     // ---------------- SFX API ----------------
     public void PlaySfx(SfxType type)
     {
-        if (sfxMap == null || !sfxMap.TryGetValue(type, out var data) || data.clip == null) return;
+        if (!userUnlockedAudio) return;
+        if (!sfxMap.TryGetValue(type, out var data) || data.clip == null) return;
 
         AudioSource sfx = gameObject.AddComponent<AudioSource>();
         sfx.playOnAwake = false;
