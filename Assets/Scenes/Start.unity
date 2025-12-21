@@ -541,6 +541,31 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 77f64bba1ef614383a4ffd371eb47256, type: 3}
     volume: 0.509
   fadeTime: 1.5
+  sfxList:
+  - type: 0
+    clip: {fileID: 8300000, guid: a82a5ab3694bd46549ea9b66b2154010, type: 3}
+    volume: 0.232
+  - type: 1
+    clip: {fileID: 8300000, guid: 7d4da73acbe8d45f489781f84d103681, type: 3}
+    volume: 0.232
+  - type: 2
+    clip: {fileID: 8300000, guid: d436590cfe5e344e880d5b22e1f1e538, type: 3}
+    volume: 0.203
+  - type: 3
+    clip: {fileID: 8300000, guid: a72b87be5c5874a3fb5754967a86e6f8, type: 3}
+    volume: 0.246
+  - type: 4
+    clip: {fileID: 8300000, guid: f7375f7d6f6cf42c89164171a7f63981, type: 3}
+    volume: 0.261
+  - type: 5
+    clip: {fileID: 8300000, guid: 0c1fc9739b17d4b11856bb7bd6fd889f, type: 3}
+    volume: 0.254
+  - type: 6
+    clip: {fileID: 8300000, guid: 25a1173ab77b9484c8581228ee9dbd68, type: 3}
+    volume: 0.254
+  - type: 7
+    clip: {fileID: 8300000, guid: b2fb56db94ea043f5986fc1ac7603aad, type: 3}
+    volume: 0.319
   sfxVolume: 1
 --- !u!4 &628998331
 Transform:

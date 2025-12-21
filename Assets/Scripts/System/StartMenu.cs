@@ -8,6 +8,7 @@ public class StartMenu : MonoBehaviour
     public void OnClickStart()
     {
         SceneLoader.Load(startSceneName, transitionFadeTime);
+        AudioManager.Instance?.PlaySfx(SfxType.Transition);
     }
 
     public void OnClickExit()

@@ -126,6 +126,7 @@ public class ItemController : MonoBehaviour
         bool isAdded = playerInventory.TryAdd(target.itemData);
         if (isAdded)
         {
+            AudioManager.Instance?.PlaySfx(SfxType.ItemPickup);
             Debug.Log($"{target.itemData.itemName} ({target.instanceID})를 인벤토리에 넣음!");
             target.OnPickedUp();
             nearbyItems.Remove(target);
@@ -159,6 +160,7 @@ public class ItemController : MonoBehaviour
 
          // 인벤토리 참조 보장
         if(playerInventory.TryRemoveLastFilled(out ItemData droppedItemData)){
+            AudioManager.Instance?.PlaySfx(SfxType.ItemDrop);
             if(droppedItemData != null){
                 Vector3 spawnPos = playertransform.position;
                 spawnPos.y -= 0.1f;
