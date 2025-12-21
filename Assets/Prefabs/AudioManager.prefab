@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7736032992321891985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1324633484735285534}
+  - component: {fileID: 8042242238818704176}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1324633484735285534
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7736032992321891985}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2090.6733, y: 681.1759, z: -1.9030628}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8042242238818704176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7736032992321891985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac211a6b4654d4174898aa0c875177a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneBgms:
+  - sceneName: Start
+    clip: {fileID: 8300000, guid: f1c2e75f999054dafa81f70db2afb16f, type: 3}
+    volume: 0.515
+  - sceneName: Main
+    clip: {fileID: 8300000, guid: 77f64bba1ef614383a4ffd371eb47256, type: 3}
+    volume: 0.509
+  fadeTime: 0.7
+  sfxList:
+  - type: 0
+    clip: {fileID: 8300000, guid: a82a5ab3694bd46549ea9b66b2154010, type: 3}
+    volume: 0.232
+  - type: 1
+    clip: {fileID: 8300000, guid: 7d4da73acbe8d45f489781f84d103681, type: 3}
+    volume: 0.232
+  - type: 2
+    clip: {fileID: 8300000, guid: d436590cfe5e344e880d5b22e1f1e538, type: 3}
+    volume: 0.203
+  - type: 3
+    clip: {fileID: 8300000, guid: a72b87be5c5874a3fb5754967a86e6f8, type: 3}
+    volume: 0.246
+  - type: 4
+    clip: {fileID: 8300000, guid: f7375f7d6f6cf42c89164171a7f63981, type: 3}
+    volume: 0.261
+  - type: 5
+    clip: {fileID: 8300000, guid: 0c1fc9739b17d4b11856bb7bd6fd889f, type: 3}
+    volume: 0.254
+  - type: 6
+    clip: {fileID: 8300000, guid: 25a1173ab77b9484c8581228ee9dbd68, type: 3}
+    volume: 0.254
+  - type: 7
+    clip: {fileID: 8300000, guid: b2fb56db94ea043f5986fc1ac7603aad, type: 3}
+    volume: 0.319
+  sfxVolume: 1

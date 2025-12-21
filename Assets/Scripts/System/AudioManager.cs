@@ -22,8 +22,12 @@ public class AudioManager : MonoBehaviour
     [Header("Fade")]
     public float fadeTime = 0.8f;
 
+    [Header("BGM Auto Change Skip Scenes")]
+    [Tooltip("These scenes will NOT auto-change BGM on load. (BGM continues as-is)")]
+    public List<string> bgmSkipScenes = new List<string> { "Start" };
+
     // ---------------- SFX ----------------
-    [System.Serializable] // ★ 이거 꼭 필요
+    [System.Serializable]
     public class SfxData
     {
         public SfxType type;
@@ -62,7 +66,7 @@ public class AudioManager : MonoBehaviour
         bgm.spatialBlend = 0f; // 2D
         bgm.volume = 0f;
 
-        // 맵핑 테이블 만들기
+        // BGM 테이블 맵
         bgmMap = new Dictionary<string, SceneBgm>();
         foreach (var b in sceneBgms)
         {
@@ -70,6 +74,7 @@ public class AudioManager : MonoBehaviour
                 bgmMap.Add(b.sceneName, b);
         }
 
+        // SFX 테이블 맵
         sfxMap = new Dictionary<SfxType, SfxData>();
         foreach (var s in sfxList)
         {
@@ -78,6 +83,9 @@ public class AudioManager : MonoBehaviour
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // ✅ 앱 시작 시 현재 씬의 BGM 1회 적용 (Start/Intro 어디서 실행해도 안정)
+        ApplyBgmForScene(SceneManager.GetActiveScene().name);
     }
 
     void OnDestroy()
@@ -88,7 +96,16 @@ public class AudioManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (bgmMap.TryGetValue(scene.name, out var data))
+        ApplyBgmForScene(scene.name);
+    }
+
+    private void ApplyBgmForScene(string sceneName)
+    {
+        // ✅ Start 씬은 자동 BGM 변경 스킵 → Intro에서 시작한 곡 계속 유지
+        if (bgmSkipScenes != null && bgmSkipScenes.Contains(sceneName))
+            return;
+
+        if (bgmMap.TryGetValue(sceneName, out var data))
             PlayBgm(data.clip, data.volume);
     }
 
@@ -97,10 +114,12 @@ public class AudioManager : MonoBehaviour
     {
         if (clip == null) return;
 
-        // 같은 곡이면 볼륨만 맞추고 종료
-        if (bgm.clip == clip && bgm.isPlaying)
+        // ✅ 같은 곡이면 "재시작 금지" + 볼륨만 맞추기
+        if (bgm.clip == clip)
         {
             if (fadeCo != null) StopCoroutine(fadeCo);
+
+            if (!bgm.isPlaying) bgm.Play(); // 혹시 멈춰있으면만 재생
             bgm.volume = targetVolume;
             return;
         }

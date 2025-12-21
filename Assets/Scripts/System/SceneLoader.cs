@@ -41,9 +41,6 @@ public class SceneLoader : MonoBehaviour
     {
         _isTransitioning = true;
 
-        if (AudioManager.Instance != null)
-        AudioManager.Instance.PlaySfx(SfxType.Transition);
-
         // 1) 화면 페이드아웃 + BGM 페이드아웃 동시에
         if (AudioManager.Instance != null)
             AudioManager.Instance.FadeOutBgm(fadeTime);
@@ -52,6 +49,9 @@ public class SceneLoader : MonoBehaviour
             yield return SceneFader.Instance.FadeOut(fadeTime);
         else
             yield return new WaitForSecondsRealtime(fadeTime);
+
+        if (AudioManager.Instance != null)
+        AudioManager.Instance.PlaySfx(SfxType.Transition);
 
         // 2) 씬 로드(Async 추천)
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
