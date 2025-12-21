@@ -32,8 +32,8 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Climb")]
     [SerializeField, Range(0.0f, 20.0f)] private float climbSpeed = 4f;
-    [SerializeField] private float ladderAlignStrength = 8f;  
-    [SerializeField] private float ladderMaxAlignSpeed = 3f; 
+    [SerializeField] private float ladderAlignStrength = 8f;
+    [SerializeField] private float ladderMaxAlignSpeed = 3f;
     [SerializeField] private float ladderAlignAccel = 30f;
 
     public enum JumpState
@@ -50,7 +50,6 @@ public class CharacterMovement : MonoBehaviour
     private bool stopJump;
     private bool jump;
 
-
     private Vector2 _nextDirection;     // 인풋 방향
     private Vector2 _currentVelocity;   // 이동 속도
 
@@ -63,6 +62,13 @@ public class CharacterMovement : MonoBehaviour
 
     public UICollider[] uiSensors;
 
+    // ✅ Landing SFX (높은 점프 착지에서만)
+    [Header("Landing SFX")]
+    [Tooltip("착지 직전 y속도가 이 값 이하(더 음수, 더 빠른 낙하)면 Land SFX 재생")]
+    [SerializeField] private float hardLandingVelocity = -8f; // -6~-12 사이로 취향 조절
+
+    // ✅ 착지 직전 속도 저장
+    private float _lastYVelocity;
 
     private void Awake()
     {
@@ -76,6 +82,9 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // ✅ 항상 "현재 프레임의 y속도" 기록 (착지 순간에 직전 낙하 속도로 사용)
+        _lastYVelocity = _rigidBody.velocity.y;
+
         if (IsAnySensorBlocked())
         {
             print("정지 로직 들어옴");
@@ -104,7 +113,6 @@ public class CharacterMovement : MonoBehaviour
                 _rigidBody.velocity *= new Vector2(1f, jumpDeceleration);
         }
 
-
         if (_isClimbing)
         {
             _rigidBody.gravityScale = 0f;
@@ -122,6 +130,7 @@ public class CharacterMovement : MonoBehaviour
             _rigidBody.velocity = new Vector2(xVel, yVel);
             return;
         }
+
         _rigidBody.gravityScale = gravity;
         float targetX = _nextDirection.x * speed;
         float newX;
@@ -142,7 +151,6 @@ public class CharacterMovement : MonoBehaviour
 
     private void Update()
     {
-
         _nextDirection.x = Input.GetAxis("Horizontal");
 
         if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
@@ -179,7 +187,16 @@ public class CharacterMovement : MonoBehaviour
 
             case JumpState.InFlight:
                 if (_isGround)
+                {
+                    // ✅ "높게 점프해서 빠르게 낙하한 경우"에만 착지 SFX
+                    // (살짝 점프, 낮은 단차 이동에서는 안 남)
+                    if (!_isClimbing && _lastYVelocity <= hardLandingVelocity)
+                    {
+                        AudioManager.Instance?.PlaySfx(SfxType.Land);
+                    }
+
                     jumpState = JumpState.Landed;
+                }
                 break;
 
             case JumpState.Landed:

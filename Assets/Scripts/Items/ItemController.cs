@@ -152,6 +152,7 @@ public class ItemController : MonoBehaviour
         {
             if (!dataToCheck.canDrop && !dropHat)
             {
+                AudioManager.Instance?.PlaySfx(SfxType.No);
                 Debug.Log($"{dataToCheck.itemName}은(는) 버릴 수 없는 아이템입니다!");
                 return;
             }
