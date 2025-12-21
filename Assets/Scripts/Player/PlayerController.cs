@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     // --------------------------- Move ---------------------------
     public void OnMove(InputAction.CallbackContext ctx)
     {
+
         MoveInput = ctx.ReadValue<Vector2>();
 
         if (_sprite != null && Mathf.Abs(MoveInput.x) > 0.01f)

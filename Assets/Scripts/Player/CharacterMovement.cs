@@ -61,6 +61,8 @@ public class CharacterMovement : MonoBehaviour
     private Collider2D _standingBoxCollider;   // 지금 플레이어 바로 아래에 서 있는 박스의 collider
     private Coroutine _ignoreBoxCoroutine;
 
+    public UICollider[] uiSensors;
+
 
     private void Awake()
     {
@@ -74,6 +76,16 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (IsAnySensorBlocked())
+        {
+            print("정지 로직 들어옴");
+            // 1. 모든 속도를 0으로 만들어 정지시킴
+            _rigidBody.velocity = Vector2.zero;
+
+            // 3. 아래의 이동/점프/사다리 로직을 모두 무시하고 나감
+            return;
+        }
+
         UpdateJumpState();
         _isGround = CheckIsGround();
 
@@ -130,6 +142,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Update()
     {
+
         _nextDirection.x = Input.GetAxis("Horizontal");
 
         if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
@@ -315,5 +328,19 @@ public class CharacterMovement : MonoBehaviour
             Physics2D.IgnoreCollision(_collider, boxCollider, false);
 
         _ignoreBoxCoroutine = null;
+    }
+
+    bool IsAnySensorBlocked()
+    {
+        if (uiSensors == null) return false;
+
+        foreach (UICollider sensor in uiSensors)
+        {
+            if (sensor != null && sensor.isHittingWall)
+            {
+                return true; // 하나라도 막혀있으면 즉시 true 반환
+            }
+        }
+        return false; // 모두 괜찮으면 false 반환
     }
 }
