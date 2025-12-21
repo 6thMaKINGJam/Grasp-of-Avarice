@@ -16,6 +16,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private string restartSceneName = "Main";
 
     private ItemData[] _slots;
+    public ColliderSlotUI[] colliderSlotUIs;
 
     public event Action OnChanged;
     public event Action OnGameOver;
@@ -119,6 +120,10 @@ public class PlayerInventory : MonoBehaviour
 
                 OnChanged?.Invoke();
                 print(slotIndex + "번 슬롯에 " + item.itemName + " 아이템 추가됨");
+
+                // 뒤 배경 on
+                colliderSlotUIs[k].SetVisualsActive(true);
+
                 if (k == fillOrder.Length - 1)
                 {
                     Debug.Log("인벤토리가 가득 찼습니다!");

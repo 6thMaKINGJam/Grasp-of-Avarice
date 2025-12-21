@@ -6911,6 +6911,22 @@ MonoBehaviour:
   capacity: 15
   fillOrder: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
   restartSceneName: Start
+  colliderSlotUIs:
+  - {fileID: 1971064036}
+  - {fileID: 1917410994}
+  - {fileID: 97868980}
+  - {fileID: 1046340368}
+  - {fileID: 1270088476}
+  - {fileID: 395284227}
+  - {fileID: 1235077705}
+  - {fileID: 1110199564}
+  - {fileID: 15460932}
+  - {fileID: 291815553}
+  - {fileID: 706365979}
+  - {fileID: 661610773}
+  - {fileID: 1782053000}
+  - {fileID: 310721885}
+  - {fileID: 92645081}
   startingHat: {fileID: 11400000, guid: 95fa1f4b93ee51f4c897176ee363cc7b, type: 2}
   playerLife: {fileID: 0}
   animator: {fileID: 0}
@@ -7109,7 +7125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8315881593023066499, guid: 885e3d1b0c3a14470b9d8189dd648bb3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 58.904
+      value: 59.87
       objectReference: {fileID: 0}
     - target: {fileID: 8315881593023066499, guid: 885e3d1b0c3a14470b9d8189dd648bb3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -16582,7 +16598,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4969575629958547903, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 57.96
+      value: 57.81
       objectReference: {fileID: 0}
     - target: {fileID: 4969575629958547903, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
       propertyPath: m_LocalPosition.y
