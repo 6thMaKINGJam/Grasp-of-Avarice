@@ -2028,6 +2028,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DialoguePanel: {fileID: 406740544}
   DialogueText: {fileID: 1771820605}
+  coinWall: {fileID: 812630482}
   message: give me money
   neededCoin: 3
 --- !u!61 &192465675
@@ -4517,9 +4518,7 @@ Transform:
   m_LocalPosition: {x: 0.6849943, y: 0.6114383, z: 6.4578886}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 421768436}
-  - {fileID: 573677770}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -4812,11 +4811,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 564603863}
   m_CullTransparentMesh: 1
---- !u!224 &573677770 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7113129034517008537, guid: ac4b87322012a624b95f1e5a931d9fa9, type: 3}
-  m_PrefabInstance: {fileID: 3165947935582060941}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &582378201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5622,7 +5616,7 @@ MonoBehaviour:
   speed: 4.1
   acceleration: 9.2
   deceleration: 8.5
-  defaultJumpPower: 6.5
+  defaultJumpPower: 8
   gravity: 1
   groundMask:
     serializedVersion: 2
@@ -8141,7 +8135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6840115456681309902, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_LocalPosition.x
