@@ -820,6 +820,7 @@ GameObject:
   - component: {fileID: 109361116}
   - component: {fileID: 109361115}
   - component: {fileID: 109361114}
+  - component: {fileID: 109361118}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -858,7 +859,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -871,7 +872,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &109361115
 BoxCollider2D:
@@ -956,6 +957,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109361112}
   m_CullTransparentMesh: 1
+--- !u!231 &109361118
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109361112}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 710092525}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 2
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 1
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1001 &123494204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1249,7 +1271,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &126560508
 BoxCollider2D:
@@ -1484,7 +1506,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &145075580
 BoxCollider2D:
@@ -1633,7 +1655,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &153047931
 BoxCollider2D:
@@ -1887,7 +1909,7 @@ GameObject:
   - component: {fileID: 170339154}
   - component: {fileID: 170339153}
   - component: {fileID: 170339156}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TestObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1906,7 +1928,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -1920,7 +1942,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 7
 --- !u!212 &170339154
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1981,9 +2003,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170339152}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.77, y: 5.04, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -10.0803, y: 2.8471, z: 0}
+  m_LocalScale: {x: 3.9193296, y: 7.1460004, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -4132,7 +4154,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &456960184
 BoxCollider2D:
@@ -4361,6 +4383,7 @@ GameObject:
   - component: {fileID: 503063991}
   - component: {fileID: 503063990}
   - component: {fileID: 503063989}
+  - component: {fileID: 503063993}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -4399,7 +4422,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -4412,7 +4435,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &503063990
 BoxCollider2D:
@@ -4497,6 +4520,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 503063987}
   m_CullTransparentMesh: 1
+--- !u!231 &503063993
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503063987}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 710092525}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 2
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 1
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1001 &506559964
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4650,8 +4694,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1397945830}
   - {fileID: 421768436}
+  - {fileID: 573677770}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -4944,6 +4988,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 564603863}
   m_CullTransparentMesh: 1
+--- !u!224 &573677770 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7113129034517008537, guid: ac4b87322012a624b95f1e5a931d9fa9, type: 3}
+  m_PrefabInstance: {fileID: 3165947935582060941}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &582378201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7092,7 +7141,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1046835155
 BoxCollider2D:
@@ -7407,7 +7456,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1124791714
 BoxCollider2D:
@@ -7750,7 +7799,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1163814171
 BoxCollider2D:
@@ -8090,13 +8139,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2183700567866480281, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3277827281767082898, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4172927178900126372, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5507824449038041759, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_Name
       value: Grid (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507824449038041759, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6840115456681309902, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9075,7 +9140,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1443109731
 BoxCollider2D:
@@ -10232,6 +10297,7 @@ GameObject:
   - component: {fileID: 1728349100}
   - component: {fileID: 1728349099}
   - component: {fileID: 1728349098}
+  - component: {fileID: 1728349102}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -10270,7 +10336,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -10283,7 +10349,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1728349099
 BoxCollider2D:
@@ -10368,6 +10434,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1728349096}
   m_CullTransparentMesh: 1
+--- !u!231 &1728349102
+SpringJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728349096}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 710092525}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 2
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 1
+  m_Distance: 1
+  m_DampingRatio: 0
+  m_Frequency: 1
 --- !u!1001 &1735406073
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11720,7 +11807,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1936702996
 BoxCollider2D:
@@ -11907,7 +11994,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1940944903
 BoxCollider2D:
@@ -12213,7 +12300,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &1981903196
 BoxCollider2D:
@@ -12510,7 +12597,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &2077406699
 BoxCollider2D:
@@ -12973,7 +13060,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Size.x
-      value: 6
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
+      propertyPath: m_Origin.x
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.size
@@ -13033,7 +13124,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[6].first.x
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[6].first.y
@@ -13041,7 +13132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[7].first.x
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[7].first.y
@@ -13097,11 +13188,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[6].second.m_TileIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[7].second.m_TileIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_TileAssetArray.Array.data[0].m_RefCount
@@ -13177,11 +13268,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[6].second.m_TileSpriteIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[7].second.m_TileSpriteIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5580946355743174781, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
       propertyPath: m_Tiles.Array.data[3].second.m_TileObjectToInstantiateIndex
@@ -13299,9 +13390,9 @@ SceneRoots:
   - {fileID: 1402967822}
   - {fileID: 474578049}
   - {fileID: 192465677}
-  - {fileID: 170339155}
   - {fileID: 1611481624}
   - {fileID: 1549817486}
+  - {fileID: 170339155}
   - {fileID: 1202659405}
   - {fileID: 206284279}
   - {fileID: 125992142}
