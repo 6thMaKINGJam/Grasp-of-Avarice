@@ -25,10 +25,12 @@ public class PlayerInventory : MonoBehaviour
     public static PlayerInventory Instance;
     public ItemData startingHat;
     public PlayerLife playerLife;
+    public Animator animator;
 
     private void Awake()
     {
         playerLife = GetComponent<PlayerLife>();
+        animator = GetComponent<Animator>();
 
         if (Instance != null && Instance != this)
         {
@@ -150,9 +152,21 @@ public class PlayerInventory : MonoBehaviour
         // 디버그 로그
         switch(weightLevel)
         {
-            case 0: Debug.Log(currentCount + "개 -> 아이템 5개 이하: 평소 가벼운 상태"); break;
-            case 1: Debug.Log(currentCount + "개 -> 아이템 5~9개 보유: Heavy 1 상태"); break;
-            case 2: Debug.Log(currentCount + "개 -> 아이템 10개 이상 보유: Heavy 2 상태"); break;
+            case 0: 
+                Debug.Log(currentCount + "개 -> 아이템 5개 이하: 평소 가벼운 상태");
+                animator.SetBool("IsHeavy1", false);
+                animator.SetBool("IsHeavy2", false);
+                break;
+            case 1:
+                Debug.Log(currentCount + "개 -> 아이템 5~9개 보유: Heavy 1 상태");
+                animator.SetBool("IsHeavy1", true);
+                animator.SetBool("IsHeavy2", false);
+                break;
+            case 2: 
+                Debug.Log(currentCount + "개 -> 아이템 10개 이상 보유: Heavy 2 상태"); 
+                animator.SetBool("IsHeavy1", true);
+                animator.SetBool("IsHeavy2", true);
+                break;
         }
     }
 
