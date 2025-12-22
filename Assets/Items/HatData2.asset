@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: 
   itemType: 6
-  icon: {fileID: 21300000, guid: 55816d5034bc3a64685991e787438d9a, type: 3}
+  icon: {fileID: 1611194165, guid: 80d02855c5d6645aeaa07979dfc03804, type: 3}
   canDrop: 0
-  worldPrefab: {fileID: 8241586510113875489, guid: 940739211368d054782300c69fbf71b5, type: 3}
+  worldPrefab: {fileID: 8241586510113875489, guid: 5a98e647bf7b54a1dbb621a6eba73626, type: 3}
