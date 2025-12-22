@@ -9,9 +9,7 @@ Grasp of Avarice is a 2D puzzle platformer where the protagonist wakes up on the
 
 ## Controls
 
-[A / D] Move left / right
-
-[S] Move down (from boxes)
+[A / S / D] Move left / down / right
 
 [Space] Jump
 
