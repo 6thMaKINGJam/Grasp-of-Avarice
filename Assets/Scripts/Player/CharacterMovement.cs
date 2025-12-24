@@ -30,6 +30,11 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField, Range(0.01f, 1.0f)] private float groundCheckDistance = 0.25f;
 
+    [Header("Platform")]
+    [SerializeField] private LayerMask platformMask; // Platform 레이어 설정
+    [SerializeField, Range(0.01f, 0.5f)] private float platformCheckDistance = 0.15f;
+    private Coroutine _ignorePlatformCoroutine;
+
     [Header("Climb")]
     [SerializeField, Range(0.0f, 20.0f)] private float climbSpeed = 4f;
     [SerializeField] private float ladderAlignStrength = 8f;
@@ -56,12 +61,12 @@ public class CharacterMovement : MonoBehaviour
     private bool stopJump;
     private bool jump;
 
-    private Vector2 _nextDirection;     // 인풋 방향
-    private Vector2 _currentVelocity;   // 이동 속도
+    private Vector2 _nextDirection;
+    private Vector2 _currentVelocity;
 
     private bool _isGround;
     private bool _isClimbing;
-    private bool _canClimb;  // 사다리 범위 안에 있는지
+    private bool _canClimb;
 
     // Box 통과 처리 관련
     private Collider2D _standingBoxCollider;
@@ -127,7 +132,6 @@ public class CharacterMovement : MonoBehaviour
         // 점프 입력
         if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
         {
-            // 사다리 등반 중이면 점프로 사다리에서 벗어남
             if (_isClimbing)
             {
                 ExitLadder(true);
@@ -147,11 +151,42 @@ public class CharacterMovement : MonoBehaviour
             if (_ignoreBoxCoroutine == null)
                 _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
         }
+
+        // ========== 플랫폼 관통 ==========
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("S키 눌림!");
+            bool onPlatform = IsOnPlatform();
+            Debug.Log($"플랫폼 위 여부: {onPlatform}, 코루틴 실행중: {_ignorePlatformCoroutine != null}");
+            
+            if (onPlatform && _ignorePlatformCoroutine == null)
+            {
+                Debug.Log("플랫폼 통과 코루틴 시작!");
+                _ignorePlatformCoroutine = StartCoroutine(IgnorePlatformCollision());
+            }
+        }
     }
 
     /// <summary>
-    /// 일반 이동 처리
+    /// 현재 플랫폼 위에 있는지 체크
     /// </summary>
+    private bool IsOnPlatform()
+    {
+        Bounds b = _collider.bounds;
+        Vector2 origin = new Vector2(b.center.x, b.min.y);
+        Vector2 size = new Vector2(b.size.x * 0.8f, 0.1f);
+
+        RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, Vector2.down, platformCheckDistance, platformMask);
+        
+        Debug.Log($"IsOnPlatform 체크: hit={hit.collider != null}, layer={platformMask.value}");
+        if (hit.collider != null)
+        {
+            Debug.Log($"감지된 오브젝트: {hit.collider.gameObject.name}, 레이어: {hit.collider.gameObject.layer}");
+        }
+        
+        return hit.collider != null;
+    }
+
     private void HandleNormalMovement()
     {
         _rigidBody.gravityScale = gravity;
@@ -174,14 +209,10 @@ public class CharacterMovement : MonoBehaviour
         _rigidBody.velocity = new Vector2(newX, _rigidBody.velocity.y);
     }
 
-    /// <summary>
-    /// 등반 이동 처리
-    /// </summary>
     private void HandleClimbingMovement()
     {
         _rigidBody.gravityScale = 0f;
 
-        // X축 자동 정렬
         float xVel = 0f;
         if (_currentLadder != null)
         {
@@ -191,40 +222,31 @@ public class CharacterMovement : MonoBehaviour
             xVel = Mathf.MoveTowards(_rigidBody.velocity.x, desiredXVel, ladderAlignAccel * Time.fixedDeltaTime);
         }
 
-        // Y축 등반
         float yVel = _nextDirection.y * climbSpeed;
         _rigidBody.velocity = new Vector2(xVel, yVel);
 
-        // 사다리에서 벗어나기 체크
         CheckLadderExit();
     }
 
-    /// <summary>
-    /// 사다리 벗어나기 체크
-    /// </summary>
     private void CheckLadderExit()
     {
-        // 1. 수평 방향으로 강하게 입력하면 사다리에서 벗어남
         if (Mathf.Abs(_nextDirection.x) > 0.7f)
         {
             ExitLadder(false);
             return;
         }
 
-        // 2. 사다리 꼭대기에 도달했는지 체크
         if (_currentLadder != null && _nextDirection.y > 0)
         {
             float ladderTop = _currentLadder.bounds.max.y;
-            float playerCenter = _rigidBody.position.y;
+            float playerBottom = _collider.bounds.min.y; // 발 위치 기준
             
-            // 플레이어가 사다리 꼭대기를 넘어가면 자동으로 종료
-            if (playerCenter > ladderTop - 0.5f)
+            if (playerBottom > ladderTop) 
             {
                 ExitLadder(false);
             }
         }
 
-        // 3. 사다리 바닥에서 아래로 내려가면 종료
         if (_currentLadder != null && _nextDirection.y < -0.1f)
         {
             float ladderBottom = _currentLadder.bounds.min.y;
@@ -237,12 +259,8 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 사다리 등반 시작 시도
-    /// </summary>
     private void TryStartClimbing()
     {
-        // 사다리 범위 안에 있고, 수직 입력이 있을 때만
         if (_canClimb && _currentLadder != null)
         {
             if (Mathf.Abs(_nextDirection.y) > climbInputThreshold)
@@ -252,9 +270,6 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 사다리 등반 시작
-    /// </summary>
     private void StartClimbing()
     {
         _isClimbing = true;
@@ -267,10 +282,6 @@ public class CharacterMovement : MonoBehaviour
         Debug.Log("사다리 등반 시작");
     }
 
-    /// <summary>
-    /// 사다리에서 벗어남
-    /// </summary>
-    /// <param name="withJump">점프로 벗어났는지</param>
     private void ExitLadder(bool withJump)
     {
         _isClimbing = false;
@@ -279,7 +290,6 @@ public class CharacterMovement : MonoBehaviour
         if (_animator != null)
             _animator.SetBool("IsClimbing", false);
 
-        // 수평 방향으로 약간의 속도 부여 (더 자연스러운 이탈)
         if (!withJump && Mathf.Abs(_nextDirection.x) > 0.1f)
         {
             _rigidBody.velocity = new Vector2(
@@ -325,14 +335,10 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 외부에서 이동 입력 (PlayerController에서 호출)
-    /// </summary>
     public void Move(Vector2 direction)
     {
         _nextDirection = direction;
 
-        // 사다리 등반 시작 체크
         if (!_isClimbing)
         {
             TryStartClimbing();
@@ -366,7 +372,10 @@ public class CharacterMovement : MonoBehaviour
         Vector2 origin = new Vector2(b.center.x, b.min.y + 0.02f);
         Vector2 size = new Vector2(b.size.x * 0.9f, 0.06f);
 
-        RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, Vector2.down, groundCheckDistance, groundMask);
+        // Ground와 Platform 모두 체크
+        LayerMask combinedMask = groundMask | platformMask;
+        RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, Vector2.down, groundCheckDistance, combinedMask);
+        
         return hit.collider != null;
     }
 
@@ -389,7 +398,6 @@ public class CharacterMovement : MonoBehaviour
             _currentLadder = null;
             _canClimb = false;
             
-            // 사다리 트리거를 벗어나면 등반 종료
             if (_isClimbing)
             {
                 ExitLadder(false);
@@ -455,6 +463,87 @@ public class CharacterMovement : MonoBehaviour
             Physics2D.IgnoreCollision(_collider, boxCollider, false);
 
         _ignoreBoxCoroutine = null;
+    }
+
+    // ==================== 플랫폼 충돌 처리 ====================
+
+    private IEnumerator IgnorePlatformCollision()
+    {
+        if (_collider == null)
+        {
+            _ignorePlatformCoroutine = null;
+            yield break;
+        }
+
+        // 1. 발 아래 플랫폼 감지 (범위를 살짝 더 넓게 잡음)
+        Bounds b = _collider.bounds;
+        Vector2 checkPos = new Vector2(b.center.x, b.min.y - 0.1f);
+        Vector2 checkSize = new Vector2(b.size.x * 0.9f, 0.2f);
+        
+        Collider2D[] platforms = Physics2D.OverlapBoxAll(checkPos, checkSize, 0f, platformMask);
+        
+        if (platforms.Length == 0)
+        {
+            Debug.Log("플랫폼을 찾을 수 없음");
+            _ignorePlatformCoroutine = null;
+            yield break;
+        }
+
+        // 2. 모든 감지된 플랫폼과 충돌 무시
+        foreach (var platform in platforms)
+        {
+            if (platform != null)
+                Physics2D.IgnoreCollision(_collider, platform, true);
+        }
+
+        // 3. 핵심 수정: 충돌 무시 직후 캐릭터를 아주 살짝 아래로 밀어주거나 잠시 대기
+        // 이렇게 해야 발이 플랫폼에 걸려서 바로 '통과 완료'라고 판단하는 것을 방지합니다.
+        yield return new WaitForSeconds(0.5f); 
+
+        // 4. 플레이어가 플랫폼 아래로 통과할 때까지 대기
+        float timeout = 1.0f;
+        float elapsed = 0.2f; // 위에서 대기한 시간 포함
+
+        while (elapsed < timeout)
+        {
+            bool stillOverlapping = false;
+            
+            foreach (var platform in platforms)
+            {
+                if (platform == null) continue;
+
+                float playerBottom = _collider.bounds.min.y;
+                float platformTop = platform.bounds.max.y;
+
+                // 캐릭터의 발이 플랫폼의 윗부분보다 아래에 있지 않다면 아직 통과 중
+                if (playerBottom > platformTop - 0.2f) 
+                {
+                    stillOverlapping = true;
+                    break;
+                }
+            }
+
+            if (!stillOverlapping)
+            {
+                Debug.Log("플랫폼 통과 완료");
+                break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // 5. 충돌 복구
+        foreach (var platform in platforms)
+        {
+            if (_collider != null && platform != null)
+            {
+                Physics2D.IgnoreCollision(_collider, platform, false);
+            }
+        }
+
+        Debug.Log("플랫폼 충돌 복구 완료");
+        _ignorePlatformCoroutine = null;
     }
 
     bool IsAnySensorBlocked()
