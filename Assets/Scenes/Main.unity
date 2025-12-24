@@ -6772,12 +6772,14 @@ MonoBehaviour:
   gravity: 1
   groundMask:
     serializedVersion: 2
-    m_Bits: 81
+    m_Bits: 1105
   groundCheckDistance: 0.13
   climbSpeed: 3.3
   ladderAlignStrength: 2
-  ladderMaxAlignSpeed: 10
-  ladderAlignAccel: 10
+  ladderMaxAlignSpeed: 3
+  ladderAlignAccel: 30
+  climbInputThreshold: 0.1
+  ladderExitHorizontalBoost: 3
   jumpDeceleration: 0.5
   uiSensors:
   - {fileID: 1940944904}
@@ -6836,22 +6838,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: cf94eba2-28f3-46fd-82d1-718bcb33c033
     m_ActionName: PlayerActions/Move[/Keyboard/a,/Keyboard/d]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 710092528}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: OnClimb
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 293a2033-a89a-4a7d-9c76-c5347ead7036
-    m_ActionName: PlayerActions/Climb[/Keyboard/w,/Keyboard/s]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 710092528}
@@ -10046,7 +10032,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2183700567866480281, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2183700567866480281, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_TagString
@@ -12960,9 +12946,21 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
+    - target: {fileID: 6192069671638182665, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6192069671638182665, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_UsedByEffector
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6840115456681309902, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13004,6 +13002,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8657446877258472442, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      propertyPath: m_UsedByComposite
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -13014,6 +13016,9 @@ PrefabInstance:
       insertIndex: 1
       addedObject: {fileID: 1514706066}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1558190611}
     - targetCorrespondingSourceObject: {fileID: 4172927178900126372, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 248620464}
@@ -15727,6 +15732,30 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3150679390579435472, guid: 75f865d31d3e8ec439d068ec74818e6c, type: 3}
   m_PrefabInstance: {fileID: 4524456624851665469}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1558190606 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6802282212232457223, guid: ab03b000e66ff4609a5a1344988d81cb, type: 3}
+  m_PrefabInstance: {fileID: 1202659405}
+  m_PrefabAsset: {fileID: 0}
+--- !u!251 &1558190611
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558190606}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1001 &1586928005
 PrefabInstance:
   m_ObjectHideFlags: 0
