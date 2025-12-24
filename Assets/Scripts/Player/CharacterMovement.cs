@@ -35,6 +35,12 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float ladderAlignStrength = 8f;
     [SerializeField] private float ladderMaxAlignSpeed = 3f;
     [SerializeField] private float ladderAlignAccel = 30f;
+    
+    [Tooltip("사다리 시작/종료 시 필요한 수직 입력 임계값")]
+    [SerializeField, Range(0.1f, 0.9f)] private float climbInputThreshold = 0.3f;
+    
+    [Tooltip("사다리 벗어날 때 주는 수평 속도")]
+    [SerializeField] private float ladderExitHorizontalBoost = 3f;
 
     public enum JumpState
     {
@@ -55,19 +61,18 @@ public class CharacterMovement : MonoBehaviour
 
     private bool _isGround;
     private bool _isClimbing;
+    private bool _canClimb;  // 사다리 범위 안에 있는지
 
     // Box 통과 처리 관련
-    private Collider2D _standingBoxCollider;   // 지금 플레이어 바로 아래에 서 있는 박스의 collider
+    private Collider2D _standingBoxCollider;
     private Coroutine _ignoreBoxCoroutine;
 
     public UICollider[] uiSensors;
 
-    // ✅ Landing SFX (높은 점프 착지에서만)
     [Header("Landing SFX")]
-    [Tooltip("착지 직전 y속도가 이 값 이하(더 음수, 더 빠른 낙하)면 Land SFX 재생")]
-    [SerializeField] private float hardLandingVelocity = -8f; // -6~-12 사이로 취향 조절
+    [Tooltip("착지 직전 y속도가 이 값 이하면 Land SFX 재생")]
+    [SerializeField] private float hardLandingVelocity = -8f;
 
-    // ✅ 착지 직전 속도 저장
     private float _lastYVelocity;
 
     private void Awake()
@@ -82,28 +87,21 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // ✅ 항상 "현재 프레임의 y속도" 기록 (착지 순간에 직전 낙하 속도로 사용)
         _lastYVelocity = _rigidBody.velocity.y;
 
         if (IsAnySensorBlocked())
         {
-            print("정지 로직 들어옴");
-            // 1. 모든 속도를 0으로 만들어 정지시킴
             _rigidBody.velocity = Vector2.zero;
-
-            // 3. 아래의 이동/점프/사다리 로직을 모두 무시하고 나감
             return;
         }
 
         UpdateJumpState();
         _isGround = CheckIsGround();
 
+        // 점프 처리
         if (jump && _isGround)
         {
-            _rigidBody.velocity = new Vector2(
-                _rigidBody.velocity.x,
-                defaultJumpPower
-            );
+            _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, defaultJumpPower);
             jump = false;
         }
         else if (stopJump)
@@ -113,25 +111,51 @@ public class CharacterMovement : MonoBehaviour
                 _rigidBody.velocity *= new Vector2(1f, jumpDeceleration);
         }
 
+        // 등반 모드
         if (_isClimbing)
         {
-            _rigidBody.gravityScale = 0f;
-
-            float xVel = 0f;
-
-            if (_currentLadder != null)
-            {
-                float centerX = _currentLadder.bounds.center.x;
-                float offset = centerX - _rigidBody.position.x;
-                float desiredXVel = Mathf.Clamp(offset * ladderAlignStrength, -ladderMaxAlignSpeed, ladderMaxAlignSpeed);
-                xVel = Mathf.MoveTowards(_rigidBody.velocity.x, desiredXVel, ladderAlignAccel * Time.fixedDeltaTime);
-            }
-            float yVel = _nextDirection.y * climbSpeed;
-            _rigidBody.velocity = new Vector2(xVel, yVel);
+            HandleClimbingMovement();
             return;
         }
 
+        // 일반 이동 모드
+        HandleNormalMovement();
+    }
+
+    private void Update()
+    {
+        // 점프 입력
+        if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
+        {
+            // 사다리 등반 중이면 점프로 사다리에서 벗어남
+            if (_isClimbing)
+            {
+                ExitLadder(true);
+            }
+            else
+            {
+                jumpState = JumpState.PrepareToJump;
+            }
+        }
+
+        if (Input.GetButtonUp("Jump"))
+            stopJump = true;
+
+        // 박스 관통
+        if (_standingBoxCollider != null && Input.GetKeyDown(KeyCode.S))
+        {
+            if (_ignoreBoxCoroutine == null)
+                _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
+        }
+    }
+
+    /// <summary>
+    /// 일반 이동 처리
+    /// </summary>
+    private void HandleNormalMovement()
+    {
         _rigidBody.gravityScale = gravity;
+        
         float targetX = _nextDirection.x * speed;
         float newX;
 
@@ -146,26 +170,125 @@ public class CharacterMovement : MonoBehaviour
             else
                 newX = Mathf.MoveTowards(_rigidBody.velocity.x, 0f, deceleration * Time.fixedDeltaTime);
         }
+        
         _rigidBody.velocity = new Vector2(newX, _rigidBody.velocity.y);
     }
 
-    private void Update()
+    /// <summary>
+    /// 등반 이동 처리
+    /// </summary>
+    private void HandleClimbingMovement()
     {
-        _nextDirection.x = Input.GetAxis("Horizontal");
+        _rigidBody.gravityScale = 0f;
 
-        if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
-            jumpState = JumpState.PrepareToJump;
-
-        if (Input.GetButtonUp("Jump"))
-            stopJump = true;
-
-        // 박스 위에 서 있을 때 D 누르면 박스와의 충돌을 일시 해제하여 아래로 내려가도록 처리
-        if (_standingBoxCollider != null && Input.GetKeyDown(KeyCode.S))
+        // X축 자동 정렬
+        float xVel = 0f;
+        if (_currentLadder != null)
         {
-            Debug.Log("S키 눌림, 박스 충돌 무시 시작");
-            if (_ignoreBoxCoroutine == null)
-                _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
+            float centerX = _currentLadder.bounds.center.x;
+            float offset = centerX - _rigidBody.position.x;
+            float desiredXVel = Mathf.Clamp(offset * ladderAlignStrength, -ladderMaxAlignSpeed, ladderMaxAlignSpeed);
+            xVel = Mathf.MoveTowards(_rigidBody.velocity.x, desiredXVel, ladderAlignAccel * Time.fixedDeltaTime);
         }
+
+        // Y축 등반
+        float yVel = _nextDirection.y * climbSpeed;
+        _rigidBody.velocity = new Vector2(xVel, yVel);
+
+        // 사다리에서 벗어나기 체크
+        CheckLadderExit();
+    }
+
+    /// <summary>
+    /// 사다리 벗어나기 체크
+    /// </summary>
+    private void CheckLadderExit()
+    {
+        // 1. 수평 방향으로 강하게 입력하면 사다리에서 벗어남
+        if (Mathf.Abs(_nextDirection.x) > 0.7f)
+        {
+            ExitLadder(false);
+            return;
+        }
+
+        // 2. 사다리 꼭대기에 도달했는지 체크
+        if (_currentLadder != null && _nextDirection.y > 0)
+        {
+            float ladderTop = _currentLadder.bounds.max.y;
+            float playerCenter = _rigidBody.position.y;
+            
+            // 플레이어가 사다리 꼭대기를 넘어가면 자동으로 종료
+            if (playerCenter > ladderTop - 0.5f)
+            {
+                ExitLadder(false);
+            }
+        }
+
+        // 3. 사다리 바닥에서 아래로 내려가면 종료
+        if (_currentLadder != null && _nextDirection.y < -0.1f)
+        {
+            float ladderBottom = _currentLadder.bounds.min.y;
+            float playerBottom = _collider.bounds.min.y;
+            
+            if (playerBottom < ladderBottom + 0.2f && _isGround)
+            {
+                ExitLadder(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 사다리 등반 시작 시도
+    /// </summary>
+    private void TryStartClimbing()
+    {
+        // 사다리 범위 안에 있고, 수직 입력이 있을 때만
+        if (_canClimb && _currentLadder != null)
+        {
+            if (Mathf.Abs(_nextDirection.y) > climbInputThreshold)
+            {
+                StartClimbing();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 사다리 등반 시작
+    /// </summary>
+    private void StartClimbing()
+    {
+        _isClimbing = true;
+        _rigidBody.velocity = Vector2.zero;
+        _rigidBody.gravityScale = 0f;
+        
+        if (_animator != null)
+            _animator.SetBool("IsClimbing", true);
+        
+        Debug.Log("사다리 등반 시작");
+    }
+
+    /// <summary>
+    /// 사다리에서 벗어남
+    /// </summary>
+    /// <param name="withJump">점프로 벗어났는지</param>
+    private void ExitLadder(bool withJump)
+    {
+        _isClimbing = false;
+        _rigidBody.gravityScale = gravity;
+        
+        if (_animator != null)
+            _animator.SetBool("IsClimbing", false);
+
+        // 수평 방향으로 약간의 속도 부여 (더 자연스러운 이탈)
+        if (!withJump && Mathf.Abs(_nextDirection.x) > 0.1f)
+        {
+            _rigidBody.velocity = new Vector2(
+                _nextDirection.x * ladderExitHorizontalBoost,
+                _rigidBody.velocity.y
+            );
+        }
+        
+        Debug.Log("사다리에서 벗어남");
     }
 
     private void UpdateJumpState()
@@ -188,13 +311,10 @@ public class CharacterMovement : MonoBehaviour
             case JumpState.InFlight:
                 if (_isGround)
                 {
-                    // ✅ "높게 점프해서 빠르게 낙하한 경우"에만 착지 SFX
-                    // (살짝 점프, 낮은 단차 이동에서는 안 남)
                     if (!_isClimbing && _lastYVelocity <= hardLandingVelocity)
                     {
                         AudioManager.Instance?.PlaySfx(SfxType.Land);
                     }
-
                     jumpState = JumpState.Landed;
                 }
                 break;
@@ -205,9 +325,18 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 외부에서 이동 입력 (PlayerController에서 호출)
+    /// </summary>
     public void Move(Vector2 direction)
     {
         _nextDirection = direction;
+
+        // 사다리 등반 시작 체크
+        if (!_isClimbing)
+        {
+            TryStartClimbing();
+        }
     }
 
     public void Jump()
@@ -218,32 +347,14 @@ public class CharacterMovement : MonoBehaviour
     public void Jump(float jumpPower)
     {
         if (_isClimbing) return;
-
         if (!CheckIsGround()) return;
 
         _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, 0f);
         _rigidBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
     }
 
-    public void ClimbState()
-    {
-        _isClimbing = true;
-        _nextDirection = Vector2.zero;
-        _rigidBody.velocity = Vector2.zero;
-        _rigidBody.gravityScale = 0f;
-        //_animator.SetBool("IsClimbing", true);
-    }
-
-    public void EndClimbState()
-    {
-        _isClimbing = false;
-        _rigidBody.gravityScale = gravity;
-        //_animator.SetBool("IsClimbing", false);
-    }
-
     public bool IsClimbing() => _isClimbing;
 
-    /// <summary>플립용: 스프라이트가 바라보는 x방향</summary>
     public Vector2 GetCharacterSpriteDirection()
     {
         return new Vector2(_sprite.flipX ? -1 : 1, 0);
@@ -256,46 +367,49 @@ public class CharacterMovement : MonoBehaviour
         Vector2 size = new Vector2(b.size.x * 0.9f, 0.06f);
 
         RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, Vector2.down, groundCheckDistance, groundMask);
-        Debug.DrawLine(origin, origin + Vector2.down * groundCheckDistance, Color.red);
-
         return hit.collider != null;
     }
 
+    // ==================== 사다리 트리거 이벤트 ====================
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Ladder"))
         {
             _currentLadder = other;
-            ClimbState();
-            _animator.SetBool("IsClimbing", _isClimbing);
-            print(_isClimbing + "사다리 접촉");
+            _canClimb = true;
+            Debug.Log("사다리 범위 진입 (등반 가능)");
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Ladder"))
+        if (other.CompareTag("Ladder") && _currentLadder == other)
         {
-            if (_currentLadder == other) _currentLadder = null;
-            EndClimbState();
-            _animator.SetBool("IsClimbing", _isClimbing);
-            print(_isClimbing + "사다리에서 나옴");
+            _currentLadder = null;
+            _canClimb = false;
+            
+            // 사다리 트리거를 벗어나면 등반 종료
+            if (_isClimbing)
+            {
+                ExitLadder(false);
+            }
+            
+            Debug.Log("사다리 범위 벗어남");
         }
     }
 
-    // 박스 위에 서 있는지 판단: collision의 contact normal을 사용
+    // ==================== 박스 충돌 처리 ====================
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Box")) return;
 
-        Debug.Log("Box 위에 서 있음");
         foreach (var contact in collision.contacts)
         {
-            // contact.normal 는 충돌 쪽에서 바라본 법선, 플레이어가 위에 있으면 normal.y > 0
             if (contact.normal.y > 0.5f)
             {
                 _standingBoxCollider = collision.collider;
-                Debug.Log("standingBoxCollider 설정됨");
                 return;
             }
         }
@@ -305,14 +419,11 @@ public class CharacterMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Box"))
         {
-            Debug.Log("Box에서 벗어남");
             if (collision.collider == _standingBoxCollider)
                 _standingBoxCollider = null;
         }
     }
 
-    // 플레이어 콜라이더와 boxCollider 간 충돌을 일시 무시하고,
-    // 플레이어가 완전히 박스 아래로 내려가면 충돌을 복구
     private IEnumerator IgnoreBoxCollision(Collider2D boxCollider)
     {
         if (_collider == null || boxCollider == null)
@@ -333,7 +444,6 @@ public class CharacterMovement : MonoBehaviour
             float playerBottom = _collider.bounds.min.y;
             float boxBottom = boxCollider.bounds.min.y;
 
-            // 플레이어가 박스보다 아래로 내려가면 종료
             if (playerBottom < boxBottom - 0.01f)
                 break;
 
@@ -355,9 +465,9 @@ public class CharacterMovement : MonoBehaviour
         {
             if (sensor != null && sensor.isHittingWall)
             {
-                return true; // 하나라도 막혀있으면 즉시 true 반환
+                return true;
             }
         }
-        return false; // 모두 괜찮으면 false 반환
+        return false;
     }
 }

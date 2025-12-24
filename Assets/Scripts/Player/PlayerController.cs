@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
     private PlayerInput _playerInput;
     private CharacterMovement _movement;
     private SpriteRenderer _sprite;
-    public Vector2 MoveInput { get; private set; }  
-    public Vector2 ClimbInput { get; private set; } 
+    
+    public Vector2 MoveInput { get; private set; }
 
     private void Awake()
     {
@@ -18,39 +18,29 @@ public class PlayerController : MonoBehaviour
     }
 
     // --------------------------- Move ---------------------------
+    // 이제 수평/수직 입력을 모두 통합해서 처리
     public void OnMove(InputAction.CallbackContext ctx)
     {
-
         MoveInput = ctx.ReadValue<Vector2>();
 
+        // 스프라이트 플립 (수평 이동 시)
         if (_sprite != null && Mathf.Abs(MoveInput.x) > 0.01f)
+        {
             _sprite.flipX = MoveInput.x < 0;
-
-        if (_movement.IsClimbing())
-        {
-            return;
         }
 
-        _movement.Move(new Vector2(MoveInput.x, 0f));
-    }
-
-    // --------------------------- Climb ---------------------------
-    public void OnClimb(InputAction.CallbackContext ctx)
-    {
-        ClimbInput = ctx.ReadValue<Vector2>();
-
-        if (_movement.IsClimbing())
-        {
-            _movement.Move(new Vector2(0f, ClimbInput.y));
-        }
+        // CharacterMovement로 전달
+        // 등반 중이든 아니든 상관없이 모든 입력을 전달
+        _movement.Move(MoveInput);
     }
 
     // --------------------------- Jump ---------------------------
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        AudioManager.Instance?.PlaySfx(SfxType.Jump);
         if (!ctx.performed) return;
 
+        // 등반 중이면 CharacterMovement가 알아서 사다리에서 벗어남
+        AudioManager.Instance?.PlaySfx(SfxType.Jump);
         _movement.Jump();
     }
 
@@ -59,7 +49,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!ctx.performed) return;
 
-        // TODO: 소지품 줍기 (E버튼과 연결해둠)
+        // TODO: 소지품 줍기 (E버튼)
         Debug.Log("[Input] Pick");
     }
 
@@ -68,7 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!ctx.performed) return;
 
-        // TODO: 소지품 버리기 (Q버튼과 연결해둠)
+        // TODO: 소지품 버리기 (Q버튼)
         Debug.Log("[Input] Drop");
     }
 }
