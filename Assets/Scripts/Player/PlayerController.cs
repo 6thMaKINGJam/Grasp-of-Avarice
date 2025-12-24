@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     }
 
     // --------------------------- Move ---------------------------
-    // 이제 수평/수직 입력을 모두 통합해서 처리
     public void OnMove(InputAction.CallbackContext ctx)
     {
         MoveInput = ctx.ReadValue<Vector2>();

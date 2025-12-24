@@ -145,17 +145,19 @@ public class CharacterMovement : MonoBehaviour
         if (Input.GetButtonUp("Jump"))
             stopJump = true;
 
+        bool isDownPressed = Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow);
+
         // 박스 관통
-        if (_standingBoxCollider != null && Input.GetKeyDown(KeyCode.S))
+        if (_standingBoxCollider != null && isDownPressed)
         {
             if (_ignoreBoxCoroutine == null)
                 _ignoreBoxCoroutine = StartCoroutine(IgnoreBoxCollision(_standingBoxCollider));
         }
 
         // ========== 플랫폼 관통 ==========
-        if (Input.GetKeyDown(KeyCode.S))
+        if (isDownPressed)
         {
-            Debug.Log("S키 눌림!");
+            Debug.Log("아래키 눌림!");
             bool onPlatform = IsOnPlatform();
             Debug.Log($"플랫폼 위 여부: {onPlatform}, 코루틴 실행중: {_ignorePlatformCoroutine != null}");
             
@@ -442,7 +444,7 @@ public class CharacterMovement : MonoBehaviour
 
         Physics2D.IgnoreCollision(_collider, boxCollider, true);
 
-        float timeout = 1.5f;
+        float timeout = 1.0f;
         float elapsed = 0f;
 
         while (elapsed < timeout)
