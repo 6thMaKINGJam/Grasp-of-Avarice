@@ -285,6 +285,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gem4 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 40.440002
@@ -552,6 +556,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gem4 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -716,6 +724,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1433,6 +1445,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2350,8 +2366,8 @@ GameObject:
   - component: {fileID: 184000123}
   - component: {fileID: 184000122}
   - component: {fileID: 184000121}
-  - component: {fileID: 184000120}
   - component: {fileID: 184000119}
+  - component: {fileID: 184000124}
   m_Layer: 0
   m_Name: NPC2
   m_TagString: Untagged
@@ -2386,23 +2402,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &184000120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184000118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50f042b6e873e4f6aa58b628c765e151, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DialoguePanel: {fileID: 1536387699}
-  DialogueText: {fileID: 1288830262}
-  coinWall: {fileID: 978097502}
-  message: give me money
-  neededCoin: 5
 --- !u!61 &184000121
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2516,6 +2515,23 @@ Transform:
   - {fileID: 95152638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &184000124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184000118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7af0b24b268ab442383d1af0ad8341de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DialoguePanel: {fileID: 1536387699}
+  DialogueText: {fileID: 1288830262}
+  coinWall: {fileID: 978097502}
+  message: 
+  neededGem: 5
 --- !u!1 &192465673
 GameObject:
   m_ObjectHideFlags: 0
@@ -4538,7 +4554,7 @@ Transform:
   m_GameObject: {fileID: 415794227}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5, y: 0.11, z: -0.080480866}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4774,6 +4790,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5658,6 +5678,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: Gem4 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6573,7 +6597,7 @@ Transform:
   m_GameObject: {fileID: 710092522}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.39, y: -3.05, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.85, y: 0.85, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7448,6 +7472,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9029,6 +9057,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13169,6 +13201,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.8199997
@@ -13327,7 +13363,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Give me 5 coins
+  m_text: Give me 5 gems
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13665,6 +13701,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 52.760002
@@ -13741,6 +13781,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16012,6 +16056,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 35.92
@@ -16706,6 +16754,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: Gem4 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17554,6 +17606,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18793,6 +18849,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5600004
@@ -19120,6 +19180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.95
@@ -19196,6 +19260,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: Gem4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19995,6 +20063,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: diamond (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
+      objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.61
@@ -20071,6 +20143,10 @@ PrefabInstance:
     - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_Name
       value: diamond (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1042950250926922645, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
+      propertyPath: m_TagString
+      value: Gem
       objectReference: {fileID: 0}
     - target: {fileID: 2007088060226568272, guid: c612bd8d8af7fb8468e4ab82c7f98ba6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20207,6 +20283,8 @@ SceneRoots:
   - {fileID: 1402967822}
   - {fileID: 192465677}
   - {fileID: 184000123}
+  - {fileID: 249588703}
+  - {fileID: 978097506}
   - {fileID: 251687597}
   - {fileID: 1354162836}
   - {fileID: 1829168201}
@@ -20222,7 +20300,5 @@ SceneRoots:
   - {fileID: 4680768332432817805}
   - {fileID: 232409614}
   - {fileID: 435662921}
-  - {fileID: 249588703}
-  - {fileID: 978097506}
   - {fileID: 8764942130774258399}
   - {fileID: 766978065}
