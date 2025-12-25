@@ -15963,7 +15963,7 @@ GameObject:
   - component: {fileID: 1514706067}
   - component: {fileID: 1514706069}
   m_Layer: 0
-  m_Name: ladder
+  m_Name: ladder1
   m_TagString: Ladder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19805,11 +19805,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8315881593023066499, guid: 885e3d1b0c3a14470b9d8189dd648bb3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.86
+      value: -16.86
       objectReference: {fileID: 0}
     - target: {fileID: 8315881593023066499, guid: 885e3d1b0c3a14470b9d8189dd648bb3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.35
+      value: 5.72
       objectReference: {fileID: 0}
     - target: {fileID: 8315881593023066499, guid: 885e3d1b0c3a14470b9d8189dd648bb3, type: 3}
       propertyPath: m_LocalPosition.z
