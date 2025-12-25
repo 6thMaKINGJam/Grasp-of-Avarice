@@ -5,54 +5,42 @@ using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instance { get; private set; }
 
-    // ---------------- BGM ----------------
     [System.Serializable]
-    public class SceneBgm
+    public struct SceneBgm
     {
         public string sceneName;
         public AudioClip clip;
-        [Range(0f, 1f)] public float volume = 0.7f;
+        [Range(0f, 1f)] public float volume;
     }
 
-    [Header("BGM (Scene -> Clip)")]
-    public List<SceneBgm> sceneBgms = new List<SceneBgm>();
-
-    [Header("Fade")]
-    public float fadeTime = 0.8f;
-
-    [Header("BGM Auto Change Skip Scenes")]
-    public List<string> bgmSkipScenes = new List<string> { "Start" };
-
-    // ---------------- SFX ----------------
     [System.Serializable]
-    public class SfxData
+    public struct SfxData
     {
         public SfxType type;
         public AudioClip clip;
-        [Range(0f, 1f)] public float volume = 1f;
+        [Range(0f, 1f)] public float volume;
     }
 
-    [Header("SFX Table")]
-    public List<SfxData> sfxList = new List<SfxData>();
+    [Header("BGM Settings")]
+    [SerializeField] private List<SceneBgm> sceneBgms = new List<SceneBgm>();
+    [SerializeField] private float fadeTime = 0.8f;
+    [SerializeField] private List<string> bgmSkipScenes = new List<string> { "Start" };
 
-    [Header("SFX")]
-    [Range(0f, 1f)] public float sfxVolume = 1f;
+    [Header("SFX Settings")]
+    [SerializeField] private List<SfxData> sfxList = new List<SfxData>();
+    [Range(0f, 1f)] [SerializeField] private float globalSfxVolume = 1f;
 
-    // ---------------- Internals ----------------
-    private AudioSource bgm;
-    private Dictionary<string, SceneBgm> bgmMap;
-    private Dictionary<SfxType, SfxData> sfxMap;
-    private Coroutine fadeCo;
+    private AudioSource bgmSource;
+    private AudioSource sfxSource; // SFX 전용 소스 추가 (PlayOneShot 활용)
+    
+    private readonly Dictionary<string, SceneBgm> bgmMap = new Dictionary<string, SceneBgm>();
+    private readonly Dictionary<SfxType, SfxData> sfxMap = new Dictionary<SfxType, SfxData>();
+    private Coroutine fadeCoroutine;
 
-    // 🔒 WebGL autoplay lock
-    private bool userUnlockedAudio = false;
-    private SceneBgm pendingBgm; // 유저 입력 전 대기 중인 BGM
-
-    void Awake()
+    private void Awake()
     {
-        // Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -61,177 +49,114 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // BGM source
-        bgm = gameObject.AddComponent<AudioSource>();
-        bgm.loop = true;
-        bgm.playOnAwake = false;
-        bgm.spatialBlend = 0f;
-        bgm.volume = 0f;
-
-        // Maps
-        bgmMap = new Dictionary<string, SceneBgm>();
-        foreach (var b in sceneBgms)
-        {
-            if (!string.IsNullOrWhiteSpace(b.sceneName) && b.clip != null && !bgmMap.ContainsKey(b.sceneName))
-                bgmMap.Add(b.sceneName, b);
-        }
-
-        sfxMap = new Dictionary<SfxType, SfxData>();
-        foreach (var s in sfxList)
-        {
-            if (s != null && s.clip != null && !sfxMap.ContainsKey(s.type))
-                sfxMap.Add(s.type, s);
-        }
+        InitAudioSources();
+        InitializeMaps();
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void OnDestroy()
+    private void InitAudioSources()
     {
-        if (Instance == this)
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+        // BGM 소스 설정
+        bgmSource = gameObject.AddComponent<AudioSource>();
+        bgmSource.loop = true;
+        bgmSource.playOnAwake = false;
+
+        // SFX 소스 설정 (매번 생성하지 않고 하나로 돌려씀)
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.loop = false;
+        sfxSource.playOnAwake = false;
     }
 
-    void Update()
+    private void InitializeMaps()
     {
-        // 🔓 첫 유저 입력으로 오디오 잠금 해제
-        if (!userUnlockedAudio && (Input.anyKeyDown || Input.GetMouseButtonDown(0)))
-        {
-            UnlockAudio();
-        }
+        foreach (var b in sceneBgms)
+            if (!string.IsNullOrEmpty(b.sceneName)) bgmMap[b.sceneName] = b;
+
+        foreach (var s in sfxList)
+            sfxMap[s.type] = s;
     }
 
-    private void UnlockAudio()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        userUnlockedAudio = true;
-
-        // 대기 중이던 BGM 있으면 이제 재생
-        if (pendingBgm != null)
-        {
-            PlayBgmInternal(pendingBgm.clip, pendingBgm.volume);
-            pendingBgm = null;
-        }
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (bgmSkipScenes != null && bgmSkipScenes.Contains(scene.name))
-            return;
+        if (bgmSkipScenes.Contains(scene.name)) return;
 
         if (bgmMap.TryGetValue(scene.name, out var data))
         {
-            // 🔒 아직 유저 입력 없으면 대기
-            if (!userUnlockedAudio)
-            {
-                pendingBgm = data;
-                return;
-            }
-
-            PlayBgmInternal(data.clip, data.volume);
+            PlayBgm(data.clip, data.volume);
         }
     }
 
-    // ---------------- BGM API ----------------
-    public void PlayBgm(AudioClip clip, float targetVolume = 0.7f)
+    #region BGM Methods
+
+    public void FadeOutBgm(float duration)
     {
-        if (clip == null) return;
-
-        if (!userUnlockedAudio)
-        {
-            // 유저 입력 전이면 예약만
-            pendingBgm = new SceneBgm { clip = clip, volume = targetVolume };
-            return;
-        }
-
-        PlayBgmInternal(clip, targetVolume);
+        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+        fadeCoroutine = StartCoroutine(FadeOutOnly(duration));
     }
 
-    private void PlayBgmInternal(AudioClip clip, float targetVolume)
+    private IEnumerator FadeOutOnly(float duration)
     {
-        // 같은 곡이면 재시작 금지
-        if (bgm.clip == clip)
-        {
-            if (!bgm.isPlaying) bgm.Play();
-            bgm.volume = targetVolume;
-            return;
-        }
-
-        if (fadeCo != null) StopCoroutine(fadeCo);
-        fadeCo = StartCoroutine(FadeSwap(clip, targetVolume, fadeTime));
+        // 이미 작성된 공통 로직 FadeVolume 활용
+        yield return StartCoroutine(FadeVolume(bgmSource.volume, 0f, duration));
+        bgmSource.Stop();
+        fadeCoroutine = null;
     }
 
-    IEnumerator FadeSwap(AudioClip next, float targetVol, float time)
+    public void PlayBgm(AudioClip clip, float volume = 0.7f)
     {
-        float t = 0f;
-        float startVol = bgm.volume;
+        if (clip == null || bgmSource.clip == clip) return;
 
+        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+        fadeCoroutine = StartCoroutine(FadeSwap(clip, volume));
+    }
+
+    private IEnumerator FadeSwap(AudioClip nextClip, float targetVolume)
+    {
         // Fade Out
-        if (bgm.isPlaying && bgm.clip != null && startVol > 0f)
+        if (bgmSource.isPlaying)
         {
-            while (t < time)
-            {
-                t += Time.unscaledDeltaTime;
-                bgm.volume = Mathf.Lerp(startVol, 0f, t / time);
-                yield return null;
-            }
+            yield return StartCoroutine(FadeVolume(bgmSource.volume, 0f, fadeTime / 2));
         }
 
-        bgm.Stop();
-        bgm.clip = next;
-        bgm.Play();
+        bgmSource.clip = nextClip;
+        bgmSource.Play();
 
         // Fade In
-        t = 0f;
-        bgm.volume = 0f;
-        while (t < time)
-        {
-            t += Time.unscaledDeltaTime;
-            bgm.volume = Mathf.Lerp(0f, targetVol, t / time);
-            yield return null;
-        }
-        bgm.volume = targetVol;
-
-        fadeCo = null;
+        yield return StartCoroutine(FadeVolume(0f, targetVolume, fadeTime / 2));
+        
+        fadeCoroutine = null;
     }
 
-    // ---------------- SFX API ----------------
+    private IEnumerator FadeVolume(float start, float end, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(start, end, elapsed / duration);
+            yield return null;
+        }
+        bgmSource.volume = end;
+    }
+
+    #endregion
+
+    #region SFX Methods
+
     public void PlaySfx(SfxType type)
     {
-        if (!userUnlockedAudio) return;
-        if (!sfxMap.TryGetValue(type, out var data) || data.clip == null) return;
-
-        AudioSource sfx = gameObject.AddComponent<AudioSource>();
-        sfx.playOnAwake = false;
-        sfx.spatialBlend = 0f;
-        sfx.volume = Mathf.Clamp01(data.volume * sfxVolume);
-        sfx.PlayOneShot(data.clip);
-
-        Destroy(sfx, data.clip.length + 0.05f);
-    }
-
-    public void FadeOutBgm(float time)
-    {
-        if (!userUnlockedAudio) return;
-
-        if (fadeCo != null) StopCoroutine(fadeCo);
-        fadeCo = StartCoroutine(FadeOutOnly(time));
-    }
-
-    private IEnumerator FadeOutOnly(float time)
-    {
-        float t = 0f;
-        float startVol = bgm.volume;
-
-        while (t < time)
+        if (sfxMap.TryGetValue(type, out var data))
         {
-            t += Time.unscaledDeltaTime;
-            float k = (time <= 0f) ? 1f : Mathf.Clamp01(t / time);
-            bgm.volume = Mathf.Lerp(startVol, 0f, k);
-            yield return null;
+            // PlayOneShot은 여러 소리가 겹쳐서 재생될 수 있어 효과적입니다.
+            sfxSource.PlayOneShot(data.clip, data.volume * globalSfxVolume);
         }
+    }
 
-        bgm.volume = 0f;
-        bgm.Stop();
-        fadeCo = null;
+    #endregion
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
