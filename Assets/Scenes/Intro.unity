@@ -302,15 +302,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1324633484735285534, guid: 5f3441b680a8a47f38a08447135a404c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2090.6733
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1324633484735285534, guid: 5f3441b680a8a47f38a08447135a404c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 681.1759
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1324633484735285534, guid: 5f3441b680a8a47f38a08447135a404c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.9030628
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1324633484735285534, guid: 5f3441b680a8a47f38a08447135a404c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -413,10 +413,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 432149765}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1018546611
 MonoBehaviour:
@@ -493,7 +493,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1595444252}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 7583dc2ab4bf34e61b9dcf6e607dacad, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: a40596038b7f845c6b5fa379f815001e, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 2038328867}
@@ -502,7 +502,7 @@ VideoPlayer:
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
   m_RenderMode: 2
-  m_AspectRatio: 5
+  m_AspectRatio: 0
   m_DataSource: 0
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
@@ -528,7 +528,7 @@ Transform:
   m_GameObject: {fileID: 1595444252}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3422805, y: -0.61798084, z: -10.036815}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -620,7 +620,7 @@ Transform:
   m_GameObject: {fileID: 2038328865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3422805, y: -0.61798084, z: -10.036815}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
