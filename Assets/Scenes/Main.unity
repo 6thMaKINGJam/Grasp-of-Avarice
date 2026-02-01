@@ -6730,7 +6730,9 @@ MonoBehaviour:
   speed: 4.1
   acceleration: 9.2
   deceleration: 8.5
-  defaultJumpPower: 6.5
+  defaultJumpPower: 8
+  jumpHeight: 2.2
+  inAirGravityMultiplier: 2
   gravity: 1
   groundMask:
     serializedVersion: 2
@@ -6746,7 +6748,7 @@ MonoBehaviour:
   ladderAlignAccel: 30
   climbInputThreshold: 0.1
   ladderExitHorizontalBoost: 3
-  jumpDeceleration: 0.5
+  jumpDeceleration: 0.9
   uiSensors:
   - {fileID: 1940944904}
   - {fileID: 1124791717}
@@ -22931,13 +22933,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: CollideObject
       objectReference: {fileID: 0}
+    - target: {fileID: 4588888829065100171, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588888829065100171, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
+      propertyPath: m_Color.b
+      value: 0.64408237
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588888829065100171, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
+      propertyPath: m_Color.g
+      value: 0.64408237
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588888829065100171, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4969575629958547903, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 57.81
+      value: -7.18
       objectReference: {fileID: 0}
     - target: {fileID: 4969575629958547903, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0471
+      value: 0.72
       objectReference: {fileID: 0}
     - target: {fileID: 4969575629958547903, guid: 96be8103f8a13a04ba72294e12d16c36, type: 3}
       propertyPath: m_LocalPosition.z

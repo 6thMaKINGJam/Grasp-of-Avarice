@@ -22,7 +22,7 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField, Range(0.0f, 30.0f)] private float defaultJumpPower = 8f;
-    [SerializeField, Range(0.1f, 20f)] private float jumpHeight = 8f;
+    [SerializeField, Range(0.1f, 20f)] private float jumpHeight = 3f;
     [SerializeField, Range(1f, 6f)] private float inAirGravityMultiplier = 1.3f;
 
     [Header("Gravity")]
@@ -58,7 +58,8 @@ public class CharacterMovement : MonoBehaviour
         Landed
     }
 
-    [SerializeField] private float jumpDeceleration = 1.3f;
+    //, Range(0.1f, 1.0f)
+    [SerializeField] private float jumpDeceleration = 0.8f;
     private JumpState jumpState = JumpState.Grounded;
     private bool stopJump;
     private bool jump;
