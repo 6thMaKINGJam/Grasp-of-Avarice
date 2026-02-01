@@ -22,6 +22,8 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField, Range(0.0f, 30.0f)] private float defaultJumpPower = 8f;
+    [SerializeField, Range(0.1f, 20f)] private float jumpHeight = 3f;
+    [SerializeField, Range(1f, 6f)] private float inAirGravityMultiplier = 1.3f;
 
     [Header("Gravity")]
     [SerializeField, Range(0.0f, 10.0f)] private float gravity = 1f;
@@ -56,7 +58,8 @@ public class CharacterMovement : MonoBehaviour
         Landed
     }
 
-    [SerializeField] private float jumpDeceleration = 0.5f;
+    //, Range(0.1f, 1.0f)
+    [SerializeField] private float jumpDeceleration = 0.8f;
     private JumpState jumpState = JumpState.Grounded;
     private bool stopJump;
     private bool jump;
@@ -79,6 +82,9 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float hardLandingVelocity = -8f;
 
     private float _lastYVelocity;
+
+    // 요청 점프 높이(외부 호출로 개별 높이 지정 가능)
+    private float _requestedJumpHeight = 0f;
 
     private void Awake()
     {
@@ -103,17 +109,31 @@ public class CharacterMovement : MonoBehaviour
         UpdateJumpState();
         _isGround = CheckIsGround();
 
+        // gravityScale 결정: 등반 / 지면 / 공중(빠르게 오르내리게 하고 싶을 때)
+        if (_isClimbing)
+            _rigidBody.gravityScale = 0f;
+        else
+            _rigidBody.gravityScale = _isGround ? gravity : gravity * inAirGravityMultiplier;
+
         // 점프 처리
         if (jump && _isGround)
         {
-            _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, defaultJumpPower);
+            float useHeight = _requestedJumpHeight > 0f ? _requestedJumpHeight : jumpHeight;
+            float gravityScaleForCalc = gravity * inAirGravityMultiplier;
+            float g = Physics2D.gravity.y * gravityScaleForCalc; // 음수
+            float initialV = Mathf.Sqrt(-2f * g * useHeight);
+
+            _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, initialV);
+
+            // 요청값 초기화
+            _requestedJumpHeight = 0f;
             jump = false;
         }
         else if (stopJump)
         {
             stopJump = false;
             if (_rigidBody.velocity.y > 0)
-                _rigidBody.velocity *= new Vector2(1f, jumpDeceleration);
+                _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, _rigidBody.velocity.y * jumpDeceleration);
         }
 
         // 등반 모드
@@ -191,8 +211,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleNormalMovement()
     {
-        _rigidBody.gravityScale = gravity;
-        
+        // gravityScale은 FixedUpdate에서 상태에 따라 결정하므로 여기서는 그대로 둠
+
         float targetX = _nextDirection.x * speed;
         float newX;
 
@@ -349,16 +369,23 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump()
     {
-        Jump(defaultJumpPower);
+        if (_isClimbing) return;
+        if (!CheckIsGround()) return;
+
+        _requestedJumpHeight = jumpHeight;
+        _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, 0f);
+        jump = true;
     }
 
-    public void Jump(float jumpPower)
+    // 외부 호출용
+    public void Jump(float requestedHeight)
     {
         if (_isClimbing) return;
         if (!CheckIsGround()) return;
 
+        _requestedJumpHeight = Mathf.Max(0.01f, requestedHeight);
         _rigidBody.velocity = new Vector2(_rigidBody.velocity.x, 0f);
-        _rigidBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        jump = true;
     }
 
     public bool IsClimbing() => _isClimbing;
