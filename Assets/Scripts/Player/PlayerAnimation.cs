@@ -6,6 +6,9 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    [SerializeField] private float debugInterval = 0.5f;
+
+    private float _debugTimer;
 
     private void Awake()
     {
@@ -19,7 +22,8 @@ public class PlayerAnimation : MonoBehaviour
         animator.SetBool("IsRightWalking", isMoving);
         
         float vertical = Input.GetAxisRaw("Vertical");
-        bool isClimbingKey = (vertical != 0) && animator.GetBool("IsClimbing");
+        print(vertical);
+        bool isClimbingKey = (Mathf.Abs(vertical)!=0f) && animator.GetBool("IsClimbing");
         animator.SetBool("IsClimbingKey", isClimbingKey);
     }
 }
