@@ -319,7 +319,7 @@ public class CharacterMovement : MonoBehaviour
                 _rigidBody.velocity.y
             );
         }
-        
+
         Debug.Log("사다리에서 벗어남");
     }
 
